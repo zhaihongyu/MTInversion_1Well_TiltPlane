@@ -219,6 +219,7 @@ for model_id=1:Model_Num
 
 %             [PWave_ObsData1,SWave_ObsData1]=Inversion_ObserDataV3...
 %                 (PWaveform_XYZ1,SWaveform_XYZ1,Ricker_EffValue_Idx);
+            % Generate the noisy observedata for the inversion
             [PWave_ObsData1,SWave_ObsData1]=Inversion_ObserData_Noise...
                 (PWaveform_OriXYZ,SWaveform_OriXYZ,Ricker_EffValue_Idx,dB);
 
