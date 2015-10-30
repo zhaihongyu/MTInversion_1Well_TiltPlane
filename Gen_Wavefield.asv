@@ -204,7 +204,37 @@ Wavefiele_DirRef=PS_Wavefield_XYZ(1:Rec_Num_DirRef,:,:)+PS_Wavefield_XYZ(Rec_Num
 %% Plot the P&S-wave field for the direct and reflect wave 2015-6-8 %
 Plot_Wavefield(SWavefield_L,Wavefiele_DirRef,Sample_Interval)
 
-% Plot the P&S-wave field for the reflect wave 2015-6-8 %
-Wavefield_Ref=PS_Wavefield_XYZ(Rec_Num_DirRef+1:Rec_Num,:,:);
-Plot_Wavefield(SWavefield_L,Wavefield_Ref,Sample_Interval)
+%% Plot the P&S-wave field for the reflect wave 2015-6-8 %
+Plot_Wavefield(SWavefield_L,Wavefiele_DirRef,Sample_Interval)
+
+Fontsize=9;
+YTick=0:20:SWavefield_L;
+YTickLabel=[0:20:SWavefield_L]*Sample_Interval*1000;
+f2=figure;
+set(f2,'Position',[100 100 1400 800])
+%
+subplot(1,3,1)
+wigb(PS_Wavefield_XYZ(Rec_Num_DirRef+1:Rec_Num,:,1)');
+set(gca,'YTick',YTick,'YTickLabel',YTickLabel,'FontSize',Fontsize);
+title('X Component','FontSize',Fontsize)
+xlabel('Trace','FontSize',Fontsize);
+ylabel('Time/ms','FontSize',Fontsize);
+%
+subplot(1,3,2)
+wigb(PS_Wavefield_XYZ(Rec_Num_DirRef+1:Rec_Num,:,2)');
+set(gca,'YTick',YTick,'YTickLabel',YTickLabel,'FontSize',Fontsize);
+title('Y Component','FontSize',Fontsize)
+xlabel('Trace','FontSize',Fontsize);
+ylabel('Time/ms','FontSize',Fontsize);
+%
+subplot(1,3,3)
+wigb(PS_Wavefield_XYZ(Rec_Num_DirRef+1:Rec_Num,:,3)');
+set(gca,'YTick',YTick,'YTickLabel',YTickLabel,'FontSize',Fontsize);
+title('Z Component','FontSize',Fontsize)
+xlabel('Trace','FontSize',Fontsize);
+ylabel('Time/ms','FontSize',Fontsize);
+
+set(f2,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 16 8]);
+print(f2,'-r300','-dtiff','Wavefield-DC');
+
 end
