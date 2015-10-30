@@ -40,5 +40,5 @@ for i=1:Rec_Num_ALL
     %}
 end
 % Plot the reflection points
-pot3(Reflection_Points(:,1),Reflection_Points(:,2),Reflection_Points(:,3),'-k');
+plot3(Reflection_Points(:,1),Reflection_Points(:,2),Reflection_Points(:,3),'-k');
 end
