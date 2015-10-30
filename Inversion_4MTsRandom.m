@@ -7,8 +7,9 @@ close all;
 
 
 %% Set the geometry 2015-5-30 %
-% Set the interface type: 1=>'Horizontal interface', 2=>'Tilt interface'
-Interface_Type=2;
+% Set the interface type: 1=>'Horizontal interface', 2=>'Tilt interface',
+% 3=>'Rotating the well'
+Interface_Type=3;
 [Receivers,Shot,Well_Num,Vp,Vs,Layer_Z,Plane_Function]=Set_Geometry_1Well_V1(Interface_Type);
 %% Set the model parameters
 Sample_Int=0.00025;
@@ -125,8 +126,8 @@ Average_VpVs_DirRef=[Average_VpVs,Average_VpVs];
 
 %% Generate and plot the P&S-wave field 2015-6-8 % 
 % DC Moment tensor
-% dB=45;
-dB=0;
+dB=60;
+% dB=0;
 %
 Gen_Wavefield(Sample_Int,TravelTime_AllWave,DirectionCos_P,DirectionCos_S,TravelDistance,M_CLVD_Neg,Rho,...
     Average_VpVs_DirRef,Ricker_Derivative,dB)
@@ -226,14 +227,12 @@ for model_id=1:Model_Num
                 (PWaveform_OriXYZ,SWaveform_OriXYZ,Ricker_EffValue_Idx,dB);
 
             % Using the P-wave to inverse the moment tensor 2015-5-31 %
-            %             Inversion_m_P=G_P\PWave_ObsData1;
             Inversion_m_P=lsqlin(G_P,PWave_ObsData1);
             Inversion_MTs_P(:,i)=Inversion_m_P;
             
             % Using the S-wave to inverse the moment tensor 2015-5-31 %
-            %             Inversion_m_P=G_P\PWave_ObsData1;
-            %             Inversion_m_S=lsqlin(G_S,SWave_ObsData1);
-            %             Inversion_MTs_S(:,i)=Inversion_m_S;
+            Inversion_m_S=lsqlin(G_S,SWave_ObsData1);
+            Inversion_MTs_S(:,i)=Inversion_m_S;
             
             % Using the P & S-wave to inverse the moment tensor %
             % 2015-5-31 %
