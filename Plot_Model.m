@@ -1,5 +1,5 @@
 %% Plot the 3D model
-function [Layer_Z]=Plot_Model(Model_X,Model_Y,Receivers,Shot,Plane_Function)
+function [Plane_Function,Layer_Z]=Plot_Model(Model_X,Model_Y,Receivers,Shot,Plane_Function)
 %% Set the Model's Sediments boundary
 % Set the model parameters 2015-6-7 %
 [Rec_Num_1Well,Com,Well_Num]=size(Receivers);

@@ -16,7 +16,8 @@ Vs=[2400, 2200, 1700,2300];
 Rec_Depth_Int=15;
 Rec_Num_1Well=10;
 Receivers=ones(Rec_Num_1Well,3,Well_Num);
-
+% The plane function parameters
+Plane_Function=zeros(1,4);
 %% According to the interface type, set the well and plane parameters
 switch Interface_Type
     case 1
@@ -42,14 +43,11 @@ switch Interface_Type
         Radius_Coeff=10;
         Model_X=[-Radius-Radius/Radius_Coeff,Radius+Radius/Radius_Coeff];
         Model_Y=[-Radius-Radius/Radius_Coeff,Radius+Radius/Radius_Coeff];
-        % Tile plane function parameters
-        Plane_Function=zeros(1,4);
+        %Set the horizontal plane parameters
         Plane_Function(1)=0.00;
         Plane_Function(2)=0.0;
         Plane_Function(3)=1;
-        
-        
-        [Layer_Z]=Plot_Model(Model_X,Model_Y,Receivers,Shot,Plane_Function);
+        [Plane_Function,Layer_Z]=Plot_Model(Model_X,Model_Y,Receivers,Shot,Plane_Function);
     case 2
         %% Set 1 vertical well 2015-8-6 %
         Radius=150;
@@ -85,12 +83,11 @@ switch Interface_Type
         Model_X=[-Radius-Radius/Radius_Coeff,Radius+Radius/Radius_Coeff];
         Model_Y=[-Radius-Radius/Radius_Coeff,Radius+Radius/Radius_Coeff];
         % Plot the 3D model
-        % Tile plane function parameters
+        % Set the tile plane function parameters
         Plane_Function(1)=0.08;
         Plane_Function(2)=0.5;
         Plane_Function(3)=-1;
-        Plane_Function(4)=Shot(3)+Layer_Int/2;
-        [Layer_Z]=Plot_Model(Model_X,Model_Y,Receivers,Shot,Plane_Function);
+        [Plane_Function,Layer_Z]=Plot_Model(Model_X,Model_Y,Receivers,Shot,Plane_Function);
     otherwise
 end
 
