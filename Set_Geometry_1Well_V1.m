@@ -24,13 +24,13 @@ switch Interface_Type
         %% Set 1 tile well 2015-10-29 %
         Well_Radius_Start=2700;
         Well_Azimuth=pi/6;
-        Well_Ploar=pi/6;
+        Well_Ploar=pi/3;
         Receivers_Radius=zeros(1,Rec_Num_1Well);
         for i=1:Well_Num
             for j=1:Rec_Num_1Well
                 Well_Radius=Well_Radius_Start+Rec_Depth_Int*j;
-                Receivers(j,1,i)=Well_Radius*cos(Well_Azimuth)*sin(Well_Ploar);
-                Receivers(j,2,i)=Well_Radius*sin(Well_Azimuth)*sin(Well_Ploar);
+                Receivers(j,1,i)=Well_Radius*cos(Well_Azimuth)*sin(Well_Ploar)-j*37;
+                Receivers(j,2,i)=Well_Radius*sin(Well_Azimuth)*sin(Well_Ploar)-j*17;
                 Receivers(j,3,i)=Well_Radius*cos(Well_Ploar);
                 Receivers_Radius(j)=Well_Radius*sin(Well_Ploar);
             end
@@ -46,7 +46,7 @@ switch Interface_Type
         %Set the horizontal plane parameters
         Plane_Function(1)=0.00;
         Plane_Function(2)=0.0;
-        Plane_Function(3)=1;
+        Plane_Function(3)=-1;
         [Plane_Function,Layer_Z]=Plot_Model(Model_X,Model_Y,Receivers,Shot,Plane_Function);
     case 2
         %% Set 1 vertical well 2015-8-6 %

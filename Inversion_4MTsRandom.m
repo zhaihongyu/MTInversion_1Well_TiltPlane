@@ -8,6 +8,7 @@ close all;
 
 %% Set the geometry 2015-5-30 %
 % Set the interface type: 1=>'Horizontal interface', 2=>'Tilt interface'
+Interface_Type=1;
 [Receivers,Shot,Well_Num,Vp,Vs,Layer_Z,Plane_Function]=Set_Geometry_1Well_V1(Interface_Type);
 %% Set the model parameters
 Sample_Int=0.00025;

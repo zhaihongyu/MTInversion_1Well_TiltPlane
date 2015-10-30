@@ -16,26 +16,38 @@ Vs=[2400, 2200, 1700,2300];
 Rec_Depth_Int=15;
 Rec_Num_1Well=10;
 Receivers=ones(Rec_Num_1Well,3,Well_Num);
-
-
-
+% The plane function parameters
+Plane_Function=zeros(1,4);
 %% According to the interface type, set the well and plane parameters
 switch Interface_Type
     case 1
-        % Set 1 tile well 2015-10-29 %
+        %% Set 1 tile well 2015-10-29 %
         Well_Radius_Start=2700;
         Well_Azimuth=pi/6;
-        Well_Ploar=pi/6;
+        Well_Ploar=pi/3;
         Receivers_Radius=zeros(1,Rec_Num_1Well);
         for i=1:Well_Num
             for j=1:Rec_Num_1Well
                 Well_Radius=Well_Radius_Start+Rec_Depth_Int*j;
                 Receivers(j,1,i)=Well_Radius*cos(Well_Azimuth)*sin(Well_Ploar);
                 Receivers(j,2,i)=Well_Radius*sin(Well_Azimuth)*sin(Well_Ploar);
-                Receivers(j,3,i)=Well_Radius*cos(Well_Ploar);
+                Receivers(j,3,i)=Well_Radius*cos(Well_Ploar)+j*;
+                Receivers_Radius(j)=Well_Radius*sin(Well_Ploar);
             end
         end
+        % Shot point coordinate 2015-5-30 %
+        Shot=[0 0 Receivers(Rec_Num_1Well/2,3,1)];
         
+        % Plot the 3D model
+        Radius=max(Receivers_Radius);
+        Radius_Coeff=10;
+        Model_X=[-Radius-Radius/Radius_Coeff,Radius+Radius/Radius_Coeff];
+        Model_Y=[-Radius-Radius/Radius_Coeff,Radius+Radius/Radius_Coeff];
+        %Set the horizontal plane parameters
+        Plane_Function(1)=0.00;
+        Plane_Function(2)=0.0;
+        Plane_Function(3)=-1;
+        [Plane_Function,Layer_Z]=Plot_Model(Model_X,Model_Y,Receivers,Shot,Plane_Function);
     case 2
         %% Set 1 vertical well 2015-8-6 %
         Radius=150;
@@ -62,6 +74,7 @@ switch Interface_Type
         end
         % Shot point coordinate 2015-5-30 %
         Shot=[0 0 Receivers(Rec_Num_1Well/2,3,1)];
+        
         %  Plot the geometry in 2D  viewer       
         Plot_2DGeometry(Well_Num,Radius,Circle_Line,Receivers,Shot)
         % Plot the 3D geometry when using vertical observing well
@@ -70,7 +83,11 @@ switch Interface_Type
         Model_X=[-Radius-Radius/Radius_Coeff,Radius+Radius/Radius_Coeff];
         Model_Y=[-Radius-Radius/Radius_Coeff,Radius+Radius/Radius_Coeff];
         % Plot the 3D model
-        [Plane_Function,Layer_Z]=Plot_Model(Model_X,Model_Y,Receivers,Shot);
+        % Set the tile plane function parameters
+        Plane_Function(1)=0.08;
+        Plane_Function(2)=0.5;
+        Plane_Function(3)=-1;
+        [Plane_Function,Layer_Z]=Plot_Model(Model_X,Model_Y,Receivers,Shot,Plane_Function);
     otherwise
 end
 

@@ -113,7 +113,7 @@ Plane_Function(4)=Shot(3)+Layer_Int/2;
 TiltPlane_X=[Model_X(1),Model_X(2),Model_X(2),Model_X(1)];
 TiltPlane_Y=[Model_Y(1),Model_Y(1),Model_Y(2),Model_Y(2)];
 % Calculate the four vertex coordinates of tilt plane
-TiltPlane_Z=Plane_Function(1)*TiltPlane_X+Plane_Function(2)*TiltPlane_Y+Plane_Function(4);
+TiltPlane_Z=-(Plane_Function(1)*TiltPlane_X+Plane_Function(2)*TiltPlane_Y+Plane_Function(4))/Plane_Function(3);
 h_TP=patch(TiltPlane_X,TiltPlane_Y,TiltPlane_Z,Layer_Color-0.2);
 set(h_TP,'EdgeAlpha',EdgeAlpha,'FaceAlpha',FaceAlpha);
 end
