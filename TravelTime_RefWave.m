@@ -39,5 +39,6 @@ for i=1:Rec_Num_ALL
     TravelTIme_RefWave_S{i}=TravelTIme_S;
     %}
 end
-
+% Plot the reflection points
+pot3(Reflection_Points(:,1),Reflection_Points(:,2),Reflection_Points(:,3),'-k');
 end

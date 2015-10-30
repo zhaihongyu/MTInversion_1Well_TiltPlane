@@ -22,15 +22,17 @@ Plane_Function=zeros(1,4);
 switch Interface_Type
     case 1
         %% Set 1 tile well 2015-10-29 %
-        Well_Radius_Start=2700;
+        Well_Radius_Start=3400;
         Well_Azimuth=pi/6;
         Well_Ploar=pi/3;
         Receivers_Radius=zeros(1,Rec_Num_1Well);
+        Recs_X_Per=900:-50:900-50*(Rec_Num_1Well);
+        Recs_Y_Per=700:-34:700-34*(Rec_Num_1Well);
         for i=1:Well_Num
             for j=1:Rec_Num_1Well
                 Well_Radius=Well_Radius_Start+Rec_Depth_Int*j;
-                Receivers(j,1,i)=Well_Radius*cos(Well_Azimuth)*sin(Well_Ploar)-j*37;
-                Receivers(j,2,i)=Well_Radius*sin(Well_Azimuth)*sin(Well_Ploar)-j*17;
+                Receivers(j,1,i)=Well_Radius*cos(Well_Azimuth)*sin(Well_Ploar)-j*Recs_X_Per(j);
+                Receivers(j,2,i)=Well_Radius*sin(Well_Azimuth)*sin(Well_Ploar)-j*Recs_Y_Per(j);
                 Receivers(j,3,i)=Well_Radius*cos(Well_Ploar);
                 Receivers_Radius(j)=Well_Radius*sin(Well_Ploar);
             end
