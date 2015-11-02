@@ -12,7 +12,8 @@ close all;
 % 2=>'1 vertical well under tilt interface',
 % 3=>'Rotating 1 vertical well under horizontal interface'
 Interface_Type=3;
-[Receivers_AllModel,Shot,Vp,Vs,Layer_Z,Plane_Function,Model_Num]=Set_Geometry_1Well_V1(Interface_Type);
+[Receivers_AllModel,Shot,Vp,Vs,Layer_Z,Plane_Function,Model_Num]=...
+    Set_Geometry_1Well_V1(Interface_Type);
 %% Set the model parameters
 Sample_Int=0.00025;
 

@@ -13,11 +13,12 @@
 %% 
 % Model_Num='Return the model number of which the model has different observe azimuth'
 % Set the interface type: 
-% 1=>'Horizontal interface', 
-% 2=>'Tilt interface',
-% 3=>'Rotating the vertical well under horiziontal interface'
+% 1=>'1 tilt well under horizontal interface', 
+% 2=>'1 vertical well under tilt interface',
+% 3=>'Rotating 1 vertical well under horizontal interface'
 
-function [Receivers,Shot,Vp,Vs,Layer_Z,Plane_Function,Model_Num]=Set_Geometry_1Well_V1(Interface_Type)
+function [Receivers,Shot,Vp,Vs,Layer_Z,Plane_Function,Model_Num]=...
+    Set_Geometry_1Well_V1(Interface_Type)
 
 % Model parameters
 Well_Num=1;
