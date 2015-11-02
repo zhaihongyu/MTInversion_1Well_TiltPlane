@@ -7,19 +7,16 @@ close all;
 
 
 %% Set the geometry 2015-5-30 %
-% Set the interface type: 1=>'Horizontal interface', 2=>'Tilt interface',
-% 3=>'Rotating the well'
+% Set the interface type: 
+% 1=>'1 tilt well under horizontal interface', 
+% 2=>'1 vertical well under tilt interface',
+% 3=>'Rotating 1 vertical well under horizontal interface'
 Interface_Type=3;
-[Receivers,Shot,Well_Num,Vp,Vs,Layer_Z,Plane_Function]=Set_Geometry_1Well_V1(Interface_Type);
+[Receivers_AllModel,Shot,Vp,Vs,Layer_Z,Plane_Function,Model_Num]=Set_Geometry_1Well_V1(Interface_Type);
 %% Set the model parameters
 Sample_Int=0.00025;
-% Set the Q error coefficient 2015-5-30 %
-Q_Err=(-10:10:10)/100;
-% Q_Err=(-75:15:165)/100;
-% Q_Err=(-60:15:150)/100;
 
 % Calculate the model number 2015-5-30 %
-Model_Num=size(Q_Err,2);
 Model_Id=1:Model_Num;
 % [Azimuth,Model_Num]=Cal_Azimuth(Well_Num);
 
@@ -27,7 +24,7 @@ Model_Id=1:Model_Num;
 main_frequency=600;
 [Ricker_Derivative]=Gen_Ricker_Der(main_frequency,Sample_Int);
 
-% % % 4 types of seismic moment tensor % % %
+% % % 4 types of basic seismic moment tensor % % %
 Sour_Num=4;
 %{
 M_ISO=[1 0 0;0 1 0;0 0 1];
@@ -52,7 +49,8 @@ M(:,:,1)=M_ISO;
 M(:,:,2)=M_DC;
 M(:,:,3)=M_CLVD_Neg;
 M(:,:,4)=M_CLVD_Pos;
-% 
+
+% Identify the random moment tensor number 
 RandMT_Num=1;
 Per_Coe=0.3;
 RandMT_ValueOri=rand(RandMT_Num*6,1);
@@ -99,52 +97,24 @@ Sensi_Kernel=zeros(Model_Num,6,2);
 Attenuated_Energy=zeros(Model_Num,2);
 % angle of elevation for every well 2015-4-23 %
 Angle_Ele=zeros(1,Model_Num);
-%% Using the raytracing method to calculate the travel time of directive
-% wave 2015-8-27
-[TraveTime_DirWav_P,TraveTime_DirWav_S,Coor_RayTrace_P,Coor_RayTrace_S,...
-    SRLayers_Vp,SRLayers_Vs]=TravelT_DirWav(Receivers,Shot,Vp,Vs,Layer_Z);
-% According to the tilt plane, to calculate the reflect wave travel time 
-[Reflection_Points,TravelDistance_RefWave,TravelTime_RefWave_P,TravelTime_RefWave_S]=...
-    TravelTime_RefWave(Shot,Receivers,Plane_Function,SRLayers_Vp,SRLayers_Vs);
 
-%% Calculate the direction cosine, travel distance and average velocity for the direct wave 2015-9-15
-[DirectionCos_DirP,DirectionCos_DirS,TravelDistance_DirWave,Average_VpVs]=...
-    Cal_DirectionCosine(Coor_RayTrace_P,Coor_RayTrace_S,TraveTime_DirWav_P,TraveTime_DirWav_S);
-% Calculate the direction cosine for the reflect wave 2015-9-15
-[DirectionCos_RefP,DirectionCos_RefS]=Cal_DirectionCos_Ref(Shot,Reflection_Points);
-
-%% Combine the directive and reflective wave information 2015-9-15
-% Combine the travel time
-[Rho,TravelTime_AllWave,TravelTime_P,TravelTime_S]=Combine_TravelTime...
-    (TraveTime_DirWav_P,TraveTime_DirWav_S,TravelTime_RefWave_P,TravelTime_RefWave_S);
-% Combine the direction cosine, travel ditance
-DirectionCos_P=[DirectionCos_DirP,DirectionCos_RefP];
-DirectionCos_S=[DirectionCos_DirS,DirectionCos_RefS];
-% 
-TravelDistance=[TravelDistance_DirWave,TravelDistance_RefWave];
-Average_VpVs_DirRef=[Average_VpVs,Average_VpVs];
-
-%% Generate and plot the P&S-wave field 2015-6-8 % 
-% DC Moment tensor
+%% Generate and plot the P&S-wave field of  CLVD MT
+[TravelDistance,TravelTime_AllWave,Average_VpVs_DirRef,...
+    DirectionCos_P,DirectionCos_S,Rho]=...
+    Cal_WaveTraveling(Receivers_AllModel(:,:,2),Shot,Vp,Vs,Layer_Z,Plane_Function);
 dB=60;
 % dB=0;
 %
 Gen_Wavefield(Sample_Int,TravelTime_AllWave,DirectionCos_P,DirectionCos_S,TravelDistance,M_CLVD_Neg,Rho,...
     Average_VpVs_DirRef,Ricker_Derivative,dB)
 %}
-%%
+%%According to different observing well, calculate the inversion error
 for model_id=1:Model_Num
-    %     Set the error Q parameters 2015-5-30 %
-    %{
-    Rec_Num=size(SRLayers_DirRef_Qp,2);
-    Qp_Err=cell(1,Rec_Num);
-    Qs_Err=cell(1,Rec_Num);
-    for i=1:Rec_Num
-        Qp_Err{i}=SRLayers_DirRef_Qp{i}*(1+Q_Err(model_id));
-        Qs_Err{i}=SRLayers_DirRef_Qs{i}*(1+Q_Err(model_id));
-    end
-    %}
-    
+    Receivers=Receivers_AllModel(:,:,model_id);
+    %Calculate the basic wave traveling parameters
+    [TravelDistance,TravelTime_AllWave,Average_VpVs_DirRef,...
+        DirectionCos_P,DirectionCos_S,Rho]=...
+        Cal_WaveTraveling(Receivers,Shot,Vp,Vs,Layer_Z,Plane_Function);
     %Using four kinds of MT (one by one) to test the inversion problem
     for i=1:Sour_Num
         RandMT_Value=RandMT_ValueOri*Per_Coe;
@@ -155,14 +125,14 @@ for model_id=1:Model_Num
         MTs4_Vector(:,i)=[MT(1,1);MT(1,2);MT(1,3);MT(2,2);MT(2,3);MT(3,3);];
         %     Genrate random disturb
         for j=1:RandMT_Num
-            %         According to the iterarion, changing the MT_Vector and adding the random disturbance into it
+            %According to the iterarion, changing the MT_Vector and adding the random disturbance into it
             MTsRandom_Vector(1,j,i)=MTs4_Vector(1,i)+RandMT_Value((Count_Num-1)*6+1);
             MTsRandom_Vector(2,j,i)=MTs4_Vector(2,i)+RandMT_Value((Count_Num-1)*6+2);
             MTsRandom_Vector(3,j,i)=MTs4_Vector(3,i)+RandMT_Value((Count_Num-1)*6+3);
             MTsRandom_Vector(4,j,i)=MTs4_Vector(4,i)+RandMT_Value((Count_Num-1)*6+4);
             MTsRandom_Vector(5,j,i)=MTs4_Vector(5,i)+RandMT_Value((Count_Num-1)*6+5);
             MTsRandom_Vector(6,j,i)=MTs4_Vector(6,i)+RandMT_Value((Count_Num-1)*6+6);
-            %         Generate the moment tensor matrix
+            %Generate the moment tensor matrix
             MT(1,:)=[MTsRandom_Vector(1,j,i) MTsRandom_Vector(2,j,i) MTsRandom_Vector(3,j,i)];
             MT(2,:)=[MTsRandom_Vector(2,j,i) MTsRandom_Vector(4,j,i) MTsRandom_Vector(5,j,i)];
             MT(3,:)=[MTsRandom_Vector(3,j,i) MTsRandom_Vector(5,j,i) MTsRandom_Vector(6,j,i)];
@@ -367,7 +337,7 @@ Plot_InvRes_4MTs_1Eve(Model_Num,RandMT_Num,Sour_Num,Q_Err,T_Orig_All,k_Orig_All,
 % Plot all the inversed moment tensors by using the P & S-wave or
 % only using the P-wave in the order of MT type 2015-7-14 %
 %
-Plot_InvRes_4MTs_Eves(Model_Num,RandMT_Num,Sour_Num,Q_Err,T_Orig_All,k_Orig_All,...
+Plot_InvRes_4MTs_Eves(Model_Num,RandMT_Num,Sour_Num,Model_Id,T_Orig_All,k_Orig_All,...
     T_PS_All,k_PS_All,T_P_All,k_P_All,T_S_All,k_S_All)
 %}
 
@@ -495,89 +465,6 @@ end
 % Plot_TkErr(Q_Err,AverError_AbsoTk_PS,AverError_AbsoTk_P,AverError_AbsoTk_S);
 
 %Plot the absolute inversion error of every kind of source by using P&S and P wave respectivly 2015-6-7 %
-Plot_TkErr_VariousGeometry(Q_Err,AverError_AbsoTk_PS,ErrorVariance_AbsoTk_PS,...
+
+Plot_TkErr_VariousGeometry(Model_Id,AverError_AbsoTk_PS,ErrorVariance_AbsoTk_PS,...
     AverError_AbsoTk_P,ErrorVariance_AbsoTk_P)
-
-%Plot the absolute inversion error of every kind of source 2015-4-23 %
-% Plot_TkErrorV4(Model_Num,Azimuth(1,:),AverError_AbsoTk_PS,ErrorVariance_AbsoTk_PS,AverError_AbsoTk_P,ErrorVariance_AbsoTk_P)
-
-%Plot the absolute inversion error of every kind of source 2015-4-28 %
-% Attenuated_Energy=log(Attenuated_Energy);
-% Plot_TkErrorV4(Model_Num,Attenuated_Energy,AverError_AbsoTk_PS,ErrorVariance_AbsoTk_PS,AverError_AbsoTk_P,ErrorVariance_AbsoTk_P)
-
-
-
-% Plot  the average error  of Tk for all the sources
-%{
-f3=figure();
-hold on
-grid on
-set(f3,'position',[100 100 500 400])
-x=1:Model_Num;
-plot(x,AverError_AbsoTk(1,:,1),'-or','LineWidth',2.5)
-plot(x,AverError_AbsoTk(2,:,1),'-^b','LineWidth',2.5)
-plot(x,AverError_AbsoTk(3,:,1),'-dk','LineWidth',2.5)
-plot(x,AverError_AbsoTk(4,:,1),'-sg','LineWidth',2.5)
-xlabel('Model Id','FontSize',12);
-ylabel('Mean','FontSize',12);
-set(gca,'FontSize',12,'YLim',[-1 1],'XLim',[0 7])
-l2=legend('T-ISO','T-CLVD','T-LVD','T-DC');
-set(l2,'Location','NorthWest');
-% MT_Name_Cur=char(MT_Name(i));
-Title=['Absolute Error of T (Using P wave)'];
-title(Title,'FontSize',12);
-print('-r600','-djpeg',Title);
-
-f4=figure();
-hold on
-grid on
-set(f4,'position',[100 100 500 400])
-plot(x,AverError_AbsoTk(1,:,2),':or','LineWidth',2.5)
-plot(x,AverError_AbsoTk(2,:,2),':^b','LineWidth',2.5)
-plot(x,AverError_AbsoTk(3,:,2),':dk','LineWidth',2.5)
-plot(x,AverError_AbsoTk(4,:,2),':sg','LineWidth',2.5)
-xlabel('Model Id','FontSize',12);
-ylabel('Mean','FontSize',12);
-set(gca,'YLim',[-1 1],'FontSize',12,'XLim',[0 7])
-l3=legend('k-ISO','k-CLVD','k-LVD','k-DC');
-set(l3,'Location','SouthEast');
-Title=['Absolute Error of k (Using P wave)'];
-title(Title,'FontSize',12);
-print('-r600','-dbmp',Title);
-%}
-
-% Plot  the average error and error variance of Tk for all the sources
-%{
-f5=figure();
-hold on
-grid on
-set(f5,'position',[100 100 500 400])
-x=[10 20 40 60];
-errorbar(x,AverError_Abso_Tk(1,:),ErrorVariance_Abso_Tk(1,:),'-.r','LineWidth',2.5)
-errorbar(x,AverError_Abso_Tk(2,:),ErrorVariance_Abso_Tk(2,:),'-.b','LineWidth',2.5)
-errorbar(x,AverError_Abso_Tk(3,:),ErrorVariance_Abso_Tk(3,:),'-.k','LineWidth',2.5)
-errorbar(x,AverError_Abso_Tk(4,:),ErrorVariance_Abso_Tk(4,:),'-.g','LineWidth',2.5)
-xlabel('Perturbation Coefficient (%)','FontSize',12);
-ylabel('Mean & Variance','FontSize',12);
-set(gca,'YLim',[-1 1],'FontSize',12)
-l3=legend('k-ISO','k-CLVD','k-LVD','k-DC');
-set(l3,'Location','NorthWest');
-Title=['Absolute Error of T-k (All Sources)'];
-title(Title,'FontSize',12);
-print('-r600','-dbmp',Title);
-%}
-
-%{
-title('Absolute Error of Moment Tensors Inversion ');
-subplot(1,2,2)
-for i=1:4
-    Plot(x,Rela_Error(:,i),'*');
-end
-
-title('Relative Error of Moment Tensors Inversion');
-% set(h1,'position',[100 100 1600 600]);
-
-%}
-% Test the moment tensor inversion (One kind of moment tensor)
-% OneMT();
-% 
