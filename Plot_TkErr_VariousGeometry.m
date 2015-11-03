@@ -4,16 +4,12 @@
 % In this Version, only display the results by using P&S wave data 2015-9-16 %
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
-function Plot_TkErr_VariousGeometry(Model_Idx,AverError_AbsoTk_PS,ErrorVariance_AbsoTk_PS,...
+function Plot_TkErr_VariousGeometry(Q_Err,AverError_AbsoTk_PS,ErrorVariance_AbsoTk_PS,...
     AverError_AbsoTk_P,ErrorVariance_AbsoTk_P)
 % Set the basic parameters 2015-6-5 %
-
-Model_Num=size(Model_Idx,2);
-Azimuth_Int=2*pi/Model_Num;
-Azimuth=0:Azimuth_Int:2*pi;
-figure
-radius=rand(1,Model_Num+1);
-polar(Azimuth,radius);
+Q_Err=Q_Err*100;
+Model_Num=size(Q_Err,2);
+Model_Id=1:Model_Num;
 % Average_AttEnergy=(Att_Energy(:,1)+Att_Energy(:,2))/2;
 MT_Name={'ISO','DC','CLVD^-','CLVD^+'};
 LEGEND={'T-PS' ,'k-PS','T-P','k-P'};
@@ -56,13 +52,21 @@ for i=1:4
 %     print('-r600','-dbmp',Title);
 end
 %}
-
+% Plot  the average error  of Tk for all the sources
+%{
+f3=figure();
+set(f3,'position',[100 100 500 400])
+subplot(2,2,1)
+hold on
+grid on
+%}
 % Plot  the average error  of Tk for all the sources 2015-7-17 %
 for i=1:4
     f3=figure();
-%     grid on
+    hold on
+    grid on
     %     set(f3,'position',[100 100 900 800])I
-%     set(f3,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 8 6]);
+    set(f3,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 8 6]);
     
     %{
     plot(Model_Id,AverError_AbsoTk_PS(i,:,1),'-or','LineWidth',LineWidth)
@@ -75,20 +79,10 @@ for i=1:4
     
     %Using the azimuth instead of model id as the horizontal coordinate 2015-5-28
     %plot the results by using P&S wave data
-    T_Error=[AverError_AbsoTk_PS(i,:,1),AverError_AbsoTk_PS(i,1,1)];
-    k_Error=[AverError_AbsoTk_PS(i,:,2),AverError_AbsoTk_PS(i,1,2)];
-%     polar(Azimuth,abs(T_Error),'--r');
-%     hold on
-%     polar(Azimuth,abs(k_Error),'b');
-    
-    polar(Azimuth,T_Error,'--r');
-    hold on
-    polar(Azimuth,k_Error,'b');
-    
-%     p1=plot(Model_Idx,AverError_AbsoTk_PS(i,:,1),'-om','LineWidth',LineWidth,...
-%         'MarkerSize',MarkerSize,'Markerfacecolor','m');
-%     p2=plot(Model_Idx,AverError_AbsoTk_PS(i,:,2),'-^m','LineWidth',LineWidth,...
-%         'MarkerSize',MarkerSize,'Markerfacecolor','m');
+    p1=plot(Q_Err,AverError_AbsoTk_PS(i,:,1),'-om','LineWidth',LineWidth,...
+        'MarkerSize',MarkerSize,'Markerfacecolor','m');
+    p2=plot(Q_Err,AverError_AbsoTk_PS(i,:,2),'-^m','LineWidth',LineWidth,...
+        'MarkerSize',MarkerSize,'Markerfacecolor','m');
     %plot the results by only using P wave data
     %{
     p3=plot(Q_Err,AverError_AbsoTk_P(i,:,1),'-og','LineWidth',LineWidth,...
@@ -109,7 +103,7 @@ for i=1:4
     %     set(gca,'FontSize',FontSize,'YLim',[-1 1],'XLim',[0 2*pi])
     xlabel('Q Error/%','FontSize',FontSize);
     %}
-%     set(gca,'YLim',[-0.8 0.8])
+    set(gca,'YLim',[-0.8 0.8])
     %Using the attenuated energy tp  instead model id as the horizontal coordinate 2015-4-28 %
     %{
     plot(Vari_Q(:,1),AverError_AbsoTk_PS(i,:,1),'-or','LineWidth',LineWidth)
@@ -120,15 +114,15 @@ for i=1:4
     %     set(gca,'FontSize',FontSize,'YLim',[-1 1],'XLim',[0 2*pi])
     xlabel('Attenuated Energy','FontSize',FontSize);
     %}
-%     ylabel('Error','FontSize',FontSize);
+    ylabel('Error','FontSize',FontSize);
     Title=['Absolute Error of T-k (', MT_Name{i},')'];
     title(Title,'FontSize',FontSize);
 
     % Generate the legend separately 
     %Firstly, generate the P&S wave legend
-%     l2=legend([p1,p2],LEGEND{1},LEGEND{2});
-%     l2_Postion=[5 8.5 2 1];
-%     set(l2,'Units','centimeters','Position',l2_Postion,'Box','off');
+    l2=legend([p1,p2],LEGEND{1},LEGEND{2});
+    l2_Postion=[5 8.5 2 1];
+    set(l2,'Units','centimeters','Position',l2_Postion,'Box','off');
     
     %Secondly, generate the P wave legend
     %{
@@ -150,6 +144,96 @@ for i=1:4
     print('-r300','-dtiff',Title);
 %     print('-dbmp',Title);
 end
+% Plot  the average error and error variance of Tk for all the sources
+% 2015-4-10 %
+%{
+f5=figure();
+hold on
+grid on
+set(f5,'position',[100 100 500 400])
+errorbar(Model_Id,AverError_AbsoTk(1,:,1),ErrorVariance_AbsoTk(1,:,1),'-r','LineWidth',2.5)
+errorbar(Model_Id,AverError_AbsoTk(2,:,1),ErrorVariance_AbsoTk(2,:,1),'-b','LineWidth',2.5)
+errorbar(Model_Id,AverError_AbsoTk(3,:,1),ErrorVariance_AbsoTk(3,:,1),'-k','LineWidth',2.5)
+errorbar(Model_Id,AverError_AbsoTk(4,:,1),ErrorVariance_AbsoTk(4,:,1),'-g','LineWidth',2.5)
+xlabel('Perturbation Coefficient (%)','FontSize',12);
+ylabel('Mean & Variance','FontSize',12);
+set(gca,'FontSize',12,'YLim',[-1 1],'XLim',[0 Model_Num+1])
+l2=legend('T-ISO','T-CLVD','T-LVD','T-DC');
+set(l2,'Location',Legend_Loc);
+% MT_Name_Cur=char(MT_Name(i));
+Title=['Absolute Error and Variance of T (Using ',WaveType_Sel,' wave)'];
+title(Title,'FontSize',12);
+print('-r600','-djpeg',Title);
+
+f6=figure();
+hold on
+grid on
+set(f6,'position',[100 100 500 400])
+errorbar(Model_Id,AverError_AbsoTk(1,:,2),ErrorVariance_AbsoTk(1,:,2),':r','LineWidth',2.5)
+errorbar(Model_Id,AverError_AbsoTk(2,:,2),ErrorVariance_AbsoTk(2,:,2),':b','LineWidth',2.5)
+errorbar(Model_Id,AverError_AbsoTk(3,:,2),ErrorVariance_AbsoTk(3,:,2),':k','LineWidth',2.5)
+errorbar(Model_Id,AverError_AbsoTk(4,:,2),ErrorVariance_AbsoTk(4,:,2),':g','LineWidth',2.5)
+xlabel('Perturbation Coefficient (%)','FontSize',12);
+ylabel('Mean & Variance','FontSize',12);
+set(gca,'YLim',[-1 1],'FontSize',12,'XLim',[0 Model_Num+1])
+l3=legend('k-ISO','k-CLVD','k-LVD','k-DC');
+set(l3,'Location',Legend_Loc);
+Title=['Absolute Error and Variance of k (Using ',WaveType_Sel,' wave)'];
+title(Title,'FontSize',12);
+print('-r600','-djpeg',Title);
 
 
+% Plot  the  error variance of Tk for all the sources 2015-4-27 %
+%{
+for i=1:4
+    f1=figure;
+    %     set(f1,'Position',[0 0 800 600])
+    set(f1,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 8 7]);
+    hold on
+    grid on
+    
+    %{
+    plot(Model_Id,ErrorVariance_AbsoTk_PS(i,:,1),'-om','LineWidth',LineWidth);
+    plot(Model_Id,ErrorVariance_AbsoTk_PS(i,:,2),'-^g','LineWidth',LineWidth);
+    plot(Model_Id,ErrorVariance_AbsoTk_P(i,:,1),':dm','LineWidth',LineWidth);
+    plot(Model_Id,ErrorVariance_AbsoTk_P(i,:,2),':sg','LineWidth',LineWidth);
+    set(gca,'XLim',[0 Model_Num+1],'YLim',[-0.1 0.6],'FontSize',FontSize)
+    xlabel('Model Id','FontSize',FontSize);
+    %}
+    
+    %Using the Vari_Q instead of model id as the horizontal coordinate
+    %2015-4-24 %
+    %
+    plot(Q_Err,ErrorVariance_AbsoTk_PS(i,:,1),':om','LineWidth',LineWidth,'Markerfacecolor','m');
+    plot(Q_Err,ErrorVariance_AbsoTk_PS(i,:,2),':^m','LineWidth',LineWidth,'Markerfacecolor','m');
+    plot(Q_Err,ErrorVariance_AbsoTk_P(i,:,1),':og','LineWidth',LineWidth,'Markerfacecolor','g');
+    plot(Q_Err,ErrorVariance_AbsoTk_P(i,:,2),':^g','LineWidth',LineWidth,'Markerfacecolor','g');
+    %     Set the axis property
+    XTick=-80:30:170;
+    XTickLabel=-80:30:170;
+    set(gca,'FontSize',FontSize,'XLim',[-80 170],'XTick',XTick,'XTickLabel',XTickLabel,'Box','on')
+%     set(gca,'FontSize',FontSize,'Box','on')
+%     set(gca,'YLim',[-0.05 0.2])
+    %     set(gca,'YLim',[-0.1 0.3],'FontSize',FontSize,'XLim',[0 2*pi])
+    xlabel('Q Error/%','FontSize',FontSize);
+    %}
+    
+    %Using the attenuated energy tp  instead model id as the horizontal coordinate
+    %2015-4-28 %
+    %{
+    plot(Vari_Q(:,1),ErrorVariance_AbsoTk_PS(i,:,1),'-om','LineWidth',LineWidth);
+    plot(Vari_Q(:,1),ErrorVariance_AbsoTk_PS(i,:,2),'-^g','LineWidth',LineWidth);
+    plot(Vari_Q(:,2),ErrorVariance_AbsoTk_P(i,:,1),':dm','LineWidth',LineWidth);
+    plot(Vari_Q(:,2),ErrorVariance_AbsoTk_P(i,:,2),':sg','LineWidth',LineWidth);
+    set(gca,'YLim',[-0.05 0.2],'FontSize',FontSize)
+    %     set(gca,'YLim',[-0.1 0.3],'FontSize',FontSize,'XLim',[0 2*pi])
+    xlabel('Attenuated Energy','FontSize',FontSize);
+    %}
+    ylabel('Error Variance','FontSize',FontSize);
+    l2=legend(LEGEND);
+    set(l2,'Location',Legend_Loc,'Orientation','horizontal');
+    Title=[' Variance of T-k (', MT_Name{i},')'];
+    title(Title,'FontSize',FontSize);
+    print('-r300','-dtiff',Title);
+    %}
 end
