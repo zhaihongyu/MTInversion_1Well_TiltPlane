@@ -11,6 +11,9 @@ function Plot_TkErr_VariousGeometry(Model_Idx,AverError_AbsoTk_PS,ErrorVariance_
 Model_Num=size(Model_Idx,2);
 Azimuth_Int=2*pi/Model_Num;
 Azimuth=0:Azimuth_Int:2*pi;
+figure
+radius=rand(1,Model_Num+1);
+polar(Azimuth,radius);
 % Average_AttEnergy=(Att_Energy(:,1)+Att_Energy(:,2))/2;
 MT_Name={'ISO','DC','CLVD^-','CLVD^+'};
 LEGEND={'T-PS' ,'k-PS','T-P','k-P'};
@@ -32,7 +35,7 @@ switch Plot_Type
     otherwise
 end
 %}
-% Plot the absolute inversion error and variance of every kind of source
+%     Plot the absolute inversion error of every kind of source
 %{
 for i=1:4
     f2=figure();
@@ -59,7 +62,7 @@ for i=1:4
     f3=figure();
 %     grid on
     %     set(f3,'position',[100 100 900 800])I
-    set(f3,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 8 6]);
+%     set(f3,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 8 6]);
     
     %{
     plot(Model_Id,AverError_AbsoTk_PS(i,:,1),'-or','LineWidth',LineWidth)
@@ -72,11 +75,20 @@ for i=1:4
     
     %Using the azimuth instead of model id as the horizontal coordinate 2015-5-28
     %plot the results by using P&S wave data
+    T_Error=[AverError_AbsoTk_PS(i,:,1),AverError_AbsoTk_PS(i,1,1)];
+    k_Error=[AverError_AbsoTk_PS(i,:,2),AverError_AbsoTk_PS(i,1,2)];
+%     polar(Azimuth,abs(T_Error),'--r');
+%     hold on
+%     polar(Azimuth,abs(k_Error),'b');
     
-    p1=plot(Model_Idx,AverError_AbsoTk_PS(i,:,1),'-om','LineWidth',LineWidth,...
-        'MarkerSize',MarkerSize,'Markerfacecolor','m');
-    p2=plot(Model_Idx,AverError_AbsoTk_PS(i,:,2),'-^m','LineWidth',LineWidth,...
-        'MarkerSize',MarkerSize,'Markerfacecolor','m');
+    polar(Azimuth,T_Error,'--r');
+    hold on
+    polar(Azimuth,k_Error,'b');
+    
+%     p1=plot(Model_Idx,AverError_AbsoTk_PS(i,:,1),'-om','LineWidth',LineWidth,...
+%         'MarkerSize',MarkerSize,'Markerfacecolor','m');
+%     p2=plot(Model_Idx,AverError_AbsoTk_PS(i,:,2),'-^m','LineWidth',LineWidth,...
+%         'MarkerSize',MarkerSize,'Markerfacecolor','m');
     %plot the results by only using P wave data
     %{
     p3=plot(Q_Err,AverError_AbsoTk_P(i,:,1),'-og','LineWidth',LineWidth,...
@@ -97,16 +109,26 @@ for i=1:4
     %     set(gca,'FontSize',FontSize,'YLim',[-1 1],'XLim',[0 2*pi])
     xlabel('Q Error/%','FontSize',FontSize);
     %}
-    set(gca,'YLim',[-0.8 0.8])
-    ylabel('Error','FontSize',FontSize);
+%     set(gca,'YLim',[-0.8 0.8])
+    %Using the attenuated energy tp  instead model id as the horizontal coordinate 2015-4-28 %
+    %{
+    plot(Vari_Q(:,1),AverError_AbsoTk_PS(i,:,1),'-or','LineWidth',LineWidth)
+    plot(Vari_Q(:,1),AverError_AbsoTk_PS(i,:,2),'-^b','LineWidth',LineWidth)
+    plot(Vari_Q(:,2),AverError_AbsoTk_P(i,:,1),':dr','LineWidth',LineWidth)
+    plot(Vari_Q(:,2),AverError_AbsoTk_P(i,:,2),':sb','LineWidth',LineWidth)
+    set(gca,'FontSize',FontSize,'YLim',[-1.5 1.2])
+    %     set(gca,'FontSize',FontSize,'YLim',[-1 1],'XLim',[0 2*pi])
+    xlabel('Attenuated Energy','FontSize',FontSize);
+    %}
+%     ylabel('Error','FontSize',FontSize);
     Title=['Absolute Error of T-k (', MT_Name{i},')'];
     title(Title,'FontSize',FontSize);
 
     % Generate the legend separately 
     %Firstly, generate the P&S wave legend
-    l2=legend([p1,p2],LEGEND{1},LEGEND{2});
-    l2_Postion=[5 8.5 2 1];
-    set(l2,'Units','centimeters','Position',l2_Postion,'Box','off');
+%     l2=legend([p1,p2],LEGEND{1},LEGEND{2});
+%     l2_Postion=[5 8.5 2 1];
+%     set(l2,'Units','centimeters','Position',l2_Postion,'Box','off');
     
     %Secondly, generate the P wave legend
     %{
@@ -122,7 +144,11 @@ for i=1:4
 %     l2_pos=get(l2,'Position');
 %     l3=legend([p3,p4],LEGEND(3:4));
 %     set(l3,'Orientation','horizontal','Position',[l2_pos(1),l2_pos(2)-0.2,l2_pos(3),l2_pos(4)]);
+    % MT_Name_Cur=char(MT_Name(i));
+    
+    %     set(f3,'PaperPositionMode','manual','PaperUnits','point','PaperPosition',[0 0 800 550]);
     print('-r300','-dtiff',Title);
+%     print('-dbmp',Title);
 end
 
 
