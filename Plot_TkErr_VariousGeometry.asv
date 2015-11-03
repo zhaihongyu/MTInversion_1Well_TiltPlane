@@ -4,13 +4,12 @@
 % In this Version, only display the results by using P&S wave data 2015-9-16 %
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 
-function Plot_TkErr_VariousGeometry(Model_Idx,AverError_AbsoTk_PS,ErrorVariance_AbsoTk_PS,...
+function Plot_TkErr_VariousGeometry(Q_Err,AverError_AbsoTk_PS,ErrorVariance_AbsoTk_PS,...
     AverError_AbsoTk_P,ErrorVariance_AbsoTk_P)
 % Set the basic parameters 2015-6-5 %
-Model_Num=size(Model_Idx,2);
-Azimuth_Int=2*pi/Model_Num;
-Azimuth=0:Azimuth_Int:2*pi-Azimuth_Int;
-
+Q_Err=Q_Err*100;
+Model_Num=size(Q_Err,2);
+Model_Id=1:Model_Num;
 % Average_AttEnergy=(Att_Energy(:,1)+Att_Energy(:,2))/2;
 MT_Name={'ISO','DC','CLVD^-','CLVD^+'};
 LEGEND={'T-PS' ,'k-PS','T-P','k-P'};
@@ -80,9 +79,9 @@ for i=1:4
     
     %Using the azimuth instead of model id as the horizontal coordinate 2015-5-28
     %plot the results by using P&S wave data
-    p1=plot(Azimuth,AverError_AbsoTk_PS(i,:,1),'-om','LineWidth',LineWidth,...
+    p1=plot(Q_Err,AverError_AbsoTk_PS(i,:,1),'-om','LineWidth',LineWidth,...
         'MarkerSize',MarkerSize,'Markerfacecolor','m');
-    p2=plot(Azimuth,AverError_AbsoTk_PS(i,:,2),'-^m','LineWidth',LineWidth,...
+    p2=plot(Q_Err,AverError_AbsoTk_PS(i,:,2),'-^m','LineWidth',LineWidth,...
         'MarkerSize',MarkerSize,'Markerfacecolor','m');
     %plot the results by only using P wave data
     %{
@@ -103,10 +102,9 @@ for i=1:4
     xlabel('Q Error/%','FontSize',FontSize);
     %}
     set(gca,'FontSize',FontSize,'Box','on')
-    YLim_Min=min([AverError_AbsoTk_PS(i,:,1),AverError_AbsoTk_PS(i,:,2)]);
-    YLim_Max=max([AverError_AbsoTk_PS(i,:,1),AverError_AbsoTk_PS(i,:,2)]);
-    YLim=[YLim_Min,YLim_Max];
-    set(gca,'YLim',YLim)
+    YLim_Min=
+    YLim=[];
+    set(gca,'YLim',[-0.8 0.8])
     ylabel('Error','FontSize',FontSize);
     Title=['Absolute Error of T-k (', MT_Name{i},')'];
     title(Title,'FontSize',FontSize);
