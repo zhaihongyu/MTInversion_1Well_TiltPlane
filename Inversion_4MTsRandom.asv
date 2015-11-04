@@ -216,7 +216,7 @@ for model_id=1:Model_Num
             Inversed_MT_Matrix=[Inversion_MTs_PS(1:3,j)';...
                 Inversion_MTs_PS(2,j),Inversion_MTs_PS(4:5,j)';...
                 Inversion_MTs_PS(3,j),Inversion_MTs_PS(5:6,j)'];
-            Inversed_SingleMT_Decom(j,:)=Decompose_MT(Inversed_MT_Matrix);
+            Inversed_SingleMT_Decom(j,:)=Decompose_MT(MT);
             % Transform the moment tensor to T-k parameters 2015-6-7 %
             [T_k_Orig]=MT_To_Tk(MTsRandom_Vector(:,j,i));
             T_Orig_All(j,model_id,i)=T_k_Orig(1);
@@ -247,8 +247,7 @@ for model_id=1:Model_Num
             %             Abso_k_Error_S(j,model_id,i)=T_k_S(2)-T_k_Orig(2);
         end
         % Combine the decomposotion of original and inversed MT 
-        Original_MTs_Decom((i-1)*RandMT_Num+1:i*RandMT_Num,:,model_id)=Original_SingleMT_Decom;
-        Inversed_MTs_Decom((i-1)*RandMT_Num+1:i*RandMT_Num,:,model_id)=Inversed_SingleMT_Decom;
+        Original_MTs_Decom((i-1)*RandMT_Num+1:i*Rand)
     end
     %Calculate the average condition number of kernel matrix
     % 2015-4-10 %
@@ -381,9 +380,6 @@ end
 % Plot_TkErr(Q_Err,AverError_AbsoTk_PS,AverError_AbsoTk_P,AverError_AbsoTk_S);
 
 %Plot the absolute inversion error of every kind of source by using P&S and P wave respectivly 2015-6-7 %
-% Plot_TkErr_VariousGeometry(Model_Id,AverError_AbsoTk_PS,ErrorVariance_AbsoTk_PS,...
-%     AverError_AbsoTk_P,ErrorVariance_AbsoTk_P)
 
-% According to the original and inversed MT, plot the decomposition results
-% and the inversion error 2015-11-4
-Plot_Decomposed_MT(Original_MTs_Decom,Inversed_MTs_Decom)
+Plot_TkErr_VariousGeometry(Model_Id,AverError_AbsoTk_PS,ErrorVariance_AbsoTk_PS,...
+    AverError_AbsoTk_P,ErrorVariance_AbsoTk_P)
