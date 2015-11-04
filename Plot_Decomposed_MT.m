@@ -11,7 +11,10 @@ MarkerSize=3;
 % Get the input parameter property
 Source_Num=4;
 MT_Name={'ISO','DC','CLVD^-','CLVD^+'};
-Legend={'ISO','CLVD','DC'};
+Legend1={'Ori-ISO','Inv-ISO'};
+Legend2={'Ori-CLVD','Inv-CLVD'};
+Legend3={'Ori-DC','Inv-DC'};
+Legend4={'ISO','CLVD','DC'};
 
 [Total_MT_Num,Com,Model_Num]=size(Original_MT_Decom);
 Model_Idx=1:Model_Num;
@@ -27,54 +30,118 @@ switch Random_MT_Num
             Original_MT=reshape(Original_MT_Decom(i,:,:),3,Model_Num);
             Inversed_MT=reshape(Inversed_MT_Decom(i,:,:),3,Model_Num);
             Inversion_Error_MT=Inversed_MT-Original_MT;
-            
+            %% Plot the original and inversed results
             figure
-            set(gcf,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 16 8])
-            % Plot the original and inversed results
-            subplot(1,2,1)
-            grid on
+            set(gcf,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 9 15])
+            % Plot the ISO components
+            subplot(3,1,1)
             hold on
-            for j=1:3
-                p1=plot(Azimuth,Original_MT(j,:),'--s','LineWidth',LineWidth,'MarkerSize',MarkerSize);
-                GetColor=p1.Color;
-                plot(Azimuth,Inversed_MT(j,:),'-*','LineWidth',LineWidth,'MarkerSize',MarkerSize,'Color',GetColor);
-            end
-            for j=1:3
-                plot(Azimuth,Inversed_MT(j,:),'-*','LineWidth',LineWidth,'MarkerSize',MarkerSize);
-            end
-            p1=plot(Azimuth,Original_MT,'--s','LineWidth',LineWidth,'MarkerSize',MarkerSize);
-            p2=plot(Azimuth,Inversed_MT,'-*','LineWidth',LineWidth,'MarkerSize',MarkerSize);
-            
-            YLim_P1=[floor(min(min(Inversed_MT))*10),ceil(max(max(Inversed_MT))*10)]/10;
-            YTick_P1=YLim_P1(1):0.1:YLim_P1(2);
-            YTickLabel_P1=YLim_P1(1)*100:10:YLim_P1(2)*100;
-            set(gca,'YLim',YLim_P1,'YTick',YTick_P1,'YTicklabel',YTickLabel_P1,'FontSize',FontSize)
-            ylabel('DC and non-DC [%]','FontSize',FontSize);
+            grid on
+            plot(Azimuth,Original_MT(1,:)*100,'--sr','LineWidth',LineWidth,'MarkerSize',MarkerSize);
+            plot(Azimuth,Inversed_MT(1,:)*100,'-*r','LineWidth',LineWidth,'MarkerSize',MarkerSize);
+            %
+%             YLim_P1=[floor(min(Inversed_MT(1,:))*10),ceil(max(Inversed_MT(1,:))*10)]/10;
+%             YTick_P1=YLim_P1(1):0.1:YLim_P1(2);
+%             YTickLabel_P1=YLim_P1(1)*100:10:YLim_P1(2)*100;
+%             set(gca,'YLim',YLim_P1,'YTick',YTick_P1,'YTicklabel',YTickLabel_P1,'FontSize',FontSize)
+            set(gca,'XLim',[0,350],'FontSize',FontSize)
+            ylabel('ISO [%]','FontSize',FontSize);
             xlabel('Oberve well Azimuth [^o]','FontSize',FontSize);
-            
-            legend(p1,Legend);
-            legend(p2,Legend);
+            legend(Legend1,'Location','best','FontSize',FontSize-3);
             Title_P1=['Inversion Result - ',MT_Name{i}];
             title(Title_P1);
-            % Plot the inversion error
-            subplot(1,2,2)
-            grid on
-            hold on
-            plot(Azimuth,Inversion_Error_MT,'-s','LineWidth',LineWidth,'MarkerSize',MarkerSize);
             
-            YLim_P2=[floor(min(min(Inversion_Error_MT))*10),ceil(max(max(Inversion_Error_MT))*10)]/10;
-            YTick_P2=YLim_P2(1):0.1:YLim_P2(2);
-            YTickLabel_P2=YLim_P2(1)*100:10:YLim_P2(2)*100;
-            set(gca,'YLim',YLim_P2,'YTick',YTick_P2,'YTicklabel',YTickLabel_P2,'FontSize',FontSize)
+            % Plot the CLVD components
+            subplot(3,1,2)
+            hold on
+            grid on
+            plot(Azimuth,Original_MT(2,:)*100,'--sg','LineWidth',LineWidth,'MarkerSize',MarkerSize);
+            plot(Azimuth,Inversed_MT(2,:)*100,'-*g','LineWidth',LineWidth,'MarkerSize',MarkerSize);
+            %
+%             YLim_P2=[floor(min(Inversed_MT(2,:))*10),ceil(max(Inversed_MT(2,:))*10)]/10;
+%             YTick_P2=YLim_P2(1):0.1:YLim_P2(2);
+%             YTickLabel_P2=YLim_P2(1)*100:10:YLim_P2(2)*100;
+%             set(gca,'YLim',YLim_P2,'YTick',YTick_P2,'YTicklabel',YTickLabel_P2,'FontSize',FontSize)
+            set(gca,'XLim',[0,350],'FontSize',FontSize)
+            ylabel('CLVD [%]','FontSize',FontSize);
+            xlabel('Oberve well Azimuth [^o]','FontSize',FontSize);
+            legend(Legend2,'Location','best','FontSize',FontSize-3);
+            Title_P2=['Inversion Result - ',MT_Name{i}];
+            title(Title_P2);
+            
+            % Plot the DC components
+            subplot(3,1,3)
+            hold on
+            grid on
+            plot(Azimuth,Original_MT(3,:)*100,'--sb','LineWidth',LineWidth,'MarkerSize',MarkerSize);
+            plot(Azimuth,Inversed_MT(3,:)*100,'-*b','LineWidth',LineWidth,'MarkerSize',MarkerSize);
+            %
+%             YLim_P3=[floor(min(Inversed_MT(3,:))*10),ceil(max(Inversed_MT(3,:))*10)]/10;
+%             YTick_P3=YLim_P3(1):0.1:YLim_P3(2);
+%             YTickLabel_P3=YLim_P3(1)*100:10:YLim_P3(2)*100;
+%             set(gca,'YLim',YLim_P3,'YTick',YTick_P3,'YTicklabel',YTickLabel_P3,'FontSize',FontSize)
+            set(gca,'XLim',[0,350],'FontSize',FontSize)
+            ylabel('DC [%]','FontSize',FontSize);
+            xlabel('Oberve well Azimuth [^o]','FontSize',FontSize);
+            legend(Legend3,'Location','best','FontSize',FontSize-3)
+            Title_P3=['Inversion Result - ',MT_Name{i}];
+            title(Title_P3);
+            
+            % Save the picture
+            Title=['Inversion Results - ',MT_Name{i}];
+            print('-r300','-dtiff',Title)
+            
+            set(gcf,'Position',[100 100 800 1400]);
+            %% Plot the inversion error
+            figure
+            set(gcf,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 8 6])
+            hold on
+            grid on
+            plot(Azimuth,Inversion_Error_MT(1,:)*100,'-or','LineWidth',LineWidth,'MarkerSize',MarkerSize);
+            plot(Azimuth,Inversion_Error_MT(2,:)*100,'-og','LineWidth',LineWidth,'MarkerSize',MarkerSize);
+            plot(Azimuth,Inversion_Error_MT(3,:)*100,'-ob','LineWidth',LineWidth,'MarkerSize',MarkerSize);
+            %
+%             YLim_P2=[floor(min(min(Inversion_Error_MT))*10),ceil(max(max(Inversion_Error_MT))*10)]/10;
+%             YTick_P2=YLim_P2(1):0.1:YLim_P2(2);
+%             YTickLabel_P2=YLim_P2(1)*100:10:YLim_P2(2)*100;
+%             set(gca,'YLim',YLim_P2,'YTick',YTick_P2,'YTicklabel',YTickLabel_P2,'FontSize',FontSize)
+            set(gca,'XLim',[0,350],'FontSize',FontSize)
             ylabel('DC and non-DC [%]');
             xlabel('Oberve well Azimuth [^o]');
+            legend(Legend4,'Location','best','FontSize',FontSize-3)
             Title_P1=['Inversion Error - ',MT_Name{i}];
             title(Title_P1);
             % Save the picture
-            Title=['Inversion Results and Inversion Error - ',MT_Name{i}];
-            print('-r300','-dtiff',Title)
+            Title_f2=['Inversion Error - ',MT_Name{i}];
+            print('-r300','-dtiff',Title_f2)
             
-            set(gcf,'Position',[100 100 1600 800]);
+            set(gcf,'Position',[100 100 800 600]);
+            
+            %% Plot the inversion error (Polar figure)
+            InvError_MT_Polar=abs([Inversion_Error_MT,Inversion_Error_MT(:,1)]*100);
+            Polar_Azimuth=[Azimuth,360]/180*pi;
+            figure
+            set(gcf,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 8 8])
+            
+%             grid on
+%             subplot(1,3,1)
+            polar(Polar_Azimuth,InvError_MT_Polar(1,:));
+            hold on
+%             subplot(1,3,2)
+            polar(Polar_Azimuth,InvError_MT_Polar(2,:));
+%             subplot(1,3,3)
+            polar(Polar_Azimuth,InvError_MT_Polar(3,:));
+%             set(gca,'XLim',[0,350],'FontSize',FontSize)
+%             ylabel('DC and non-DC [%]');
+%             xlabel('Oberve well Azimuth [^o]');
+%             legend(Legend4,'Location','best','FontSize',FontSize-3)
+            Title_P1=['Inversion Error - ',MT_Name{i}];
+            title(Title_P1);
+            % Save the picture
+            Title_f3=['Inversion Error - ',MT_Name{i},' Type2'];
+            print('-r300','-dtiff',Title_f3)
+            
+            set(gcf,'Position',[100 100 800 800]);
         end
         
     otherwise
