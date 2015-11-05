@@ -117,11 +117,13 @@ switch Random_MT_Num
             
             set(gcf,'Position',[100 100 800 600]);
             
-            %% Plot the inversion error (Polar figure)
+            %% Plot the inversion error (Polar figure) 2015-11-5            
             InvError_MT_Polar=abs([Inversion_Error_MT,Inversion_Error_MT(:,1)]);
             Polar_Azimuth=[Azimuth,360]/180*pi;
-            
-            Plot_Polar_Figure(Polar_Azimuth,InvError_MT_Polar,MT_Name{i})
+            % According to the azimuth and radius plot the polar figure
+            % Case 1: Plot all the inversion error in one figure
+            % Case 2: Plot this kind of inversion error in 3 subplots
+            Plot_Polar_Figure(Polar_Azimuth,InvError_MT_Polar,MT_Name{i},1)
         end
         
     otherwise
