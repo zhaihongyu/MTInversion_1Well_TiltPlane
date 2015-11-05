@@ -118,30 +118,10 @@ switch Random_MT_Num
             set(gcf,'Position',[100 100 800 600]);
             
             %% Plot the inversion error (Polar figure)
-            InvError_MT_Polar=abs([Inversion_Error_MT,Inversion_Error_MT(:,1)]*100);
+            InvError_MT_Polar=abs([Inversion_Error_MT,Inversion_Error_MT(:,1)]);
             Polar_Azimuth=[Azimuth,360]/180*pi;
-            figure
-            set(gcf,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 8 8])
             
-%             grid on
-%             subplot(1,3,1)
-            polar(Polar_Azimuth,InvError_MT_Polar(1,:));
-            hold on
-%             subplot(1,3,2)
-            polar(Polar_Azimuth,InvError_MT_Polar(2,:));
-%             subplot(1,3,3)
-            polar(Polar_Azimuth,InvError_MT_Polar(3,:));
-%             set(gca,'XLim',[0,350],'FontSize',FontSize)
-%             ylabel('DC and non-DC [%]');
-%             xlabel('Oberve well Azimuth [^o]');
-%             legend(Legend4,'Location','best','FontSize',FontSize-3)
-            Title_P1=['Inversion Error - ',MT_Name{i}];
-            title(Title_P1);
-            % Save the picture
-            Title_f3=['Inversion Error - ',MT_Name{i},' Type2'];
-            print('-r300','-dtiff',Title_f3)
-            
-            set(gcf,'Position',[100 100 800 800]);
+            Plot_Polar_Figure(Polar_Azimuth,InvError_MT_Polar,MT_Name{i})
         end
         
     otherwise
