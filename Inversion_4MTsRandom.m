@@ -127,8 +127,8 @@ for model_id=1:Model_Num
     close(ff) 
     %Using four kinds of MT (one by one) to test the inversion problem
     for i=1:Sour_Num
-%         RandMT_Value=RandMT_ValueOri*Per_Coe;
-        RandMT_Value=RandMT_ValueOri*0;
+        RandMT_Value=RandMT_ValueOri*Per_Coe;
+%         RandMT_Value=RandMT_ValueOri*0;
         Count_Num=1;
         
         %     Generate the moment tensor matrix
