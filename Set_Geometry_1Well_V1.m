@@ -139,10 +139,5 @@ switch Interface_Type
         [Plane_Function,Layer_Z]=Plot_Model(Model_X,Model_Y,Receivers(:,:,1),Shot,Plane_Function);
     otherwise
 end
-
-
-
-
-
-
+% End the function
 end

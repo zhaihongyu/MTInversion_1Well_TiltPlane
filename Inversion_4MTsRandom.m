@@ -109,7 +109,7 @@ Angle_Ele=zeros(1,Model_Num);
 %% Generate and plot the P&S-wave field of  CLVD MT
 [TravelDistance,TravelTime_AllWave,Average_VpVs_DirRef,...
     DirectionCos_P,DirectionCos_S,Rho]=...
-    Cal_WaveTraveling(Receivers_AllModel(:,:,2),Shot,Vp,Vs,Layer_Z,Plane_Function);
+    Cal_WaveTraveling(Receivers_AllModel(:,:,1),Shot,Vp,Vs,Layer_Z,Plane_Function);
 dB=60;
 % dB=0;
 %
@@ -120,12 +120,15 @@ Gen_Wavefield(Sample_Int,TravelTime_AllWave,DirectionCos_P,DirectionCos_S,Travel
 for model_id=1:Model_Num
     Receivers=Receivers_AllModel(:,:,model_id);
     %Calculate the basic wave traveling parameters
+    ff=figure();
     [TravelDistance,TravelTime_AllWave,Average_VpVs_DirRef,...
         DirectionCos_P,DirectionCos_S,Rho]=...
         Cal_WaveTraveling(Receivers,Shot,Vp,Vs,Layer_Z,Plane_Function);
+    close(ff) 
     %Using four kinds of MT (one by one) to test the inversion problem
     for i=1:Sour_Num
-        RandMT_Value=RandMT_ValueOri*Per_Coe;
+%         RandMT_Value=RandMT_ValueOri*Per_Coe;
+        RandMT_Value=RandMT_ValueOri*0;
         Count_Num=1;
         
         %     Generate the moment tensor matrix

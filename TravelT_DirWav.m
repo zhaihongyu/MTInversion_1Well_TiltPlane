@@ -125,7 +125,7 @@ end
 for i=1:Rec_Num_ALL
     % Plot the transmission P wave ray
     Coor_Sin_RayTrace_P=Coor_RayTrace_P{i};
-    plot3(Coor_Sin_RayTrace_P(:,1)',Coor_Sin_RayTrace_P(:,2)',Coor_Sin_RayTrace_P(:,3)','b.-');
+    plot3(Coor_Sin_RayTrace_P(:,1)',Coor_Sin_RayTrace_P(:,2)',Coor_Sin_RayTrace_P(:,3)','r.-');
     % Plot the transmission S wave ray
     Coor_Sin_RayTrace_S=Coor_RayTrace_S{i};
     plot3(Coor_Sin_RayTrace_S(:,1)',Coor_Sin_RayTrace_S(:,2)',Coor_Sin_RayTrace_S(:,3)','rd-');
