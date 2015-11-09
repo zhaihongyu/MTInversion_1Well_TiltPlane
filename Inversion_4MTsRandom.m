@@ -51,6 +51,12 @@ M(:,:,3)=M_CLVD_Neg;
 M(:,:,4)=M_CLVD_Pos;
 
 % Identify the random moment tensor number 
+Random_Type=1;
+% Rand_Type=1: generate 4 kinds of pure moment tensors
+% Rand_Type=2: genrate 4 kinds of  single random moment tensors
+% Rand_Type=3: generate 4 kinds of multiple random moment tensors
+[MTs]=Gen_4MTs(Random_Type);
+
 RandMT_Num=1;
 Per_Coe=0.3;
 RandMT_ValueOri=rand(RandMT_Num*6,1);
@@ -126,6 +132,7 @@ for model_id=1:Model_Num
         Cal_WaveTraveling(Receivers,Shot,Vp,Vs,Layer_Z,Plane_Function);
     close(ff) 
     %Using four kinds of MT (one by one) to test the inversion problem
+    
     for i=1:Sour_Num
         %Generate pure MT or random MT by changing the Pre_Coe (0 or non-0)
         RandMT_Value=RandMT_ValueOri*Per_Coe;

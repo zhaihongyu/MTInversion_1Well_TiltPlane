@@ -1,9 +1,12 @@
-% 2015-11-4
+%% 2015-11-4
 % According to the original and inversed MT, plot the decomposition results
 % and the inversion error.
-
+% When the number of every kind of moment tendor equal with 1, the polar
+% figure will be choosed to display the inversion result. Otherwise, the
+% histogram of ISO, DC and CLVD will be plotted to display the inversion
+% result.
 function Plot_Decomposed_MT(Original_MT_Decom,Inversed_MT_Decom)
-% Figure parameters
+%% Figure parameters
 
 FontSize=9;
 LineWidth=0.1;
@@ -30,7 +33,7 @@ switch Random_MT_Num
             Original_MT=reshape(Original_MT_Decom(i,:,:),3,Model_Num);
             Inversed_MT=reshape(Inversed_MT_Decom(i,:,:),3,Model_Num);
             Inversion_Error_MT=Inversed_MT-Original_MT;
-            %% Plot the original and inversed results
+            % Plot the original and inversed results
             figure
             set(gcf,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 9 15])
             % Plot the ISO components
@@ -92,7 +95,7 @@ switch Random_MT_Num
             print('-r300','-dtiff',Title)
             
             set(gcf,'Position',[100 100 800 1400]);
-            %% Plot the inversion error
+            % Plot the inversion error
             figure
             set(gcf,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 8 6])
             hold on
@@ -117,7 +120,7 @@ switch Random_MT_Num
             
             set(gcf,'Position',[100 100 800 600]);
             
-            %% Plot the inversion error (Polar figure) 2015-11-5            
+            % Plot the inversion error (Polar figure) 2015-11-5            
             InvError_MT_Polar=abs([Inversion_Error_MT,Inversion_Error_MT(:,1)]);
             Polar_Azimuth=[Azimuth,360]/180*pi;
             % According to the azimuth and radius plot the polar figure
