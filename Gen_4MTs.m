@@ -4,6 +4,7 @@
 % Rand_Type=2: genrate 4 kinds of  single random moment tensors
 % Rand_Type=3: generate 4 kinds of multiple random moment tensors
 
+
 function [MTs]=Gen_4MTs(Rand_Type)
 % 4 basic seismic moment tensors 2015-4-27 %
 M_ISO_Pos=2/3*[1 0 0;0 1 0;0 0 1];
@@ -26,7 +27,7 @@ switch Rand_Type
         Main_Coe=0.85;
         Rand_ISO=Main_Coe*M_ISO_Pos+0.1*M_DC+0.05*M_CLVD_Pos;
         Rand_DC=Main_Coe*M_DC+0.1*M_ISO_Pos+0.05*M_CLVD_Pos;
-        Rand_CLVD_Neg=Main_Coe*M_ISO_Neg+0.1*M_ISO_Pos*0.05*M_DC;
+        Rand_CLVD_Neg=Main_Coe*M_CLVD_Neg+0.1*M_ISO_Pos*0.05*M_DC;
         Rand_CLVD_Pos=Main_Coe*M_CLVD_Pos+0.1*M_ISO_Neg*0.05*M_DC;
         %Transform Matrix into vector
         MTs{1}=[Rand_ISO(1,1:3)';Rand_ISO(2,2:3)';Rand_ISO(3,3)];
@@ -35,15 +36,15 @@ switch Rand_Type
         MTs{4}=[Rand_CLVD_Pos(1,1:3)';Rand_CLVD_Pos(2,2:3)';Rand_CLVD_Pos(3,3)];
     case 3
         %%  Generate 4 kinds of random moment tensor
-        [Random_ISOs]=Gen_Random_ISO();
-        [Random_DCs]=Gen_Random_DC();
-        [Random_NegCLVDs]=Gen_Random_NegCLVD();
-        [Random_PosCLVDs]=Gen_Random_PosCLVD();
+        [Random_ISOs_6xN]=Gen_Random_ISO();
+        [Random_DCs_6xN]=Gen_Random_DC();
+        [Random_NegCLVDs_6xN]=Gen_Random_NegCLVD();
+        [Random_PosCLVDs_6xN]=Gen_Random_PosCLVD();
         MTs=cell(1,4);
-        MTs{1}=Random_ISOs;
-        MTs{2}=Random_DCs;
-        MTs{3}=Random_NegCLVDs;
-        MTs{4}=Random_PosCLVDs;
+        MTs{1}=Random_ISOs_6xN;
+        MTs{2}=Random_DCs_6xN;
+        MTs{3}=Random_NegCLVDs_6xN;
+        MTs{4}=Random_PosCLVDs_6xN;
     otherwise
         
 end

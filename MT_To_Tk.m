@@ -1,17 +1,17 @@
 % Transform the moment tensor to T-k parameters
-function [T_k]=MT_To_Tk(Inversion_m)
+function [Tk_2xN]=MT_To_Tk(Input_MTs_6xN)
 % The T & k parameters are calculated according to the different types of MT
-M_R=size(Inversion_m,2);
-T_k=zeros(2,M_R);
+MTs_Num=size(Input_MTs_6xN,2);
+Tk_2xN=zeros(2,MTs_Num);
 Inversion_MT=zeros(3,3);
 Derivative_M=zeros(3,3);
-for i=1:M_R
-    Inversion_MT(1,1:3)=Inversion_m(1:3,i);
-    Inversion_MT(2,1)=Inversion_m(2,i);
-    Inversion_MT(2,2:3)=Inversion_m(4:5,i);
-    Inversion_MT(3,1)=Inversion_m(3,i);
-    Inversion_MT(3,2)=Inversion_m(5,i);
-    Inversion_MT(3,3)=Inversion_m(6,i);
+for i=1:MTs_Num
+    Inversion_MT(1,1:3)=Input_MTs_6xN(1:3,i);
+    Inversion_MT(2,1)=Input_MTs_6xN(2,i);
+    Inversion_MT(2,2:3)=Input_MTs_6xN(4:5,i);
+    Inversion_MT(3,1)=Input_MTs_6xN(3,i);
+    Inversion_MT(3,2)=Input_MTs_6xN(5,i);
+    Inversion_MT(3,3)=Input_MTs_6xN(6,i);
     [M_Vec,M_D]=eig(Inversion_MT);
     Aver_M=(M_D(1,1)+M_D(2,2)+M_D(3,3))/3;
     for j=1:3
@@ -31,18 +31,20 @@ for i=1:M_R
 %     Calculate T
 %     Hudson et al. 1989
     if Derivative_M(i,2)>10^-4
-        T_k(1,i)=-2*Derivative_M(i,2)/Derivative_M(i,3);
+        Tk_2xN(1,i)=-2*Derivative_M(i,2)/Derivative_M(i,3);
     elseif abs(Derivative_M(i,3))<=10^-4
-        T_k(1,i)=0;
+        Tk_2xN(1,i)=0;
     else
-        T_k(1,i)=2*Derivative_M(i,2)/Derivative_M(i,1);
+        Tk_2xN(1,i)=2*Derivative_M(i,2)/Derivative_M(i,1);
     end
 %     Calculate k
     if Derivative_M(i,2)>=0
-        T_k(2,i)=Aver_M/(abs(Aver_M)-Derivative_M(i,3));
+        Tk_2xN(2,i)=Aver_M/(abs(Aver_M)-Derivative_M(i,3));
     end
     if Derivative_M(i,2)<=0
-        T_k(2,i)=Aver_M/(abs(Aver_M)+Derivative_M(i,1));
+        Tk_2xN(2,i)=Aver_M/(abs(Aver_M)+Derivative_M(i,1));
     end
     %}
+end
+% End the function
 end

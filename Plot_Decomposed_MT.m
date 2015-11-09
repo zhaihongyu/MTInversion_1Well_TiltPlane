@@ -2,38 +2,41 @@
 % According to the original and inversed MT, plot the decomposition results
 % and the inversion error.
 % When the number of every kind of moment tendor equal with 1, the polar
-% figure will be choosed to display the inversion result. Otherwise, the
-% histogram of ISO, DC and CLVD will be plotted to display the inversion
-% result.
+% figure will be choosed to display the inversion result. 
+% Otherwise, the histogram of ISO, DC and CLVD will be plotted to display
+% the inversion results.
 function Plot_Decomposed_MT(Original_MT_Decom,Inversed_MT_Decom)
 %% Figure parameters
-
 FontSize=9;
 LineWidth=0.1;
 MarkerSize=3;
 % Get the input parameter property
-Source_Num=4;
 MT_Name={'ISO','DC','CLVD^-','CLVD^+'};
 Legend1={'Ori-ISO','Inv-ISO'};
 Legend2={'Ori-CLVD','Inv-CLVD'};
 Legend3={'Ori-DC','Inv-DC'};
 Legend4={'ISO','CLVD','DC'};
 
-[Total_MT_Num,Com,Model_Num]=size(Original_MT_Decom);
+SingleType_MTsNum=size(Original_MT_Decom{1},1);
+[Model_Num,Source_Num]=size(Inversed_MT_Decom);
+
 Model_Idx=1:Model_Num;
-Random_MT_Num=Total_MT_Num/Source_Num;
 Azimuth_Int=2*pi/Model_Num;
 Azimuth=(0:Azimuth_Int:2*pi-Azimuth_Int)*180/pi;
 
 % Acoording to the 'Random_MT_Num', plot the different types of figure
-switch Random_MT_Num
+switch SingleType_MTsNum
     case 1
-        % Single input source 
+        %% Under the single input source  condition
         for i=1:Source_Num
-            Original_MT=reshape(Original_MT_Decom(i,:,:),3,Model_Num);
-            Inversed_MT=reshape(Inversed_MT_Decom(i,:,:),3,Model_Num);
+            % Transform the cell into matrix
+            Original_MT=[ones(Model_Num,1)*Original_MT_Decom{i}]';
+            Inversed_MT=zeros(3,Model_Num);
+            for j=1:Model_Num
+                Inversed_MT(:,j)=[Inversed_MT_Decom{j,i}]';
+            end
             Inversion_Error_MT=Inversed_MT-Original_MT;
-            % Plot the original and inversed results
+            % Plot the decomposition of original and inversed results
             figure
             set(gcf,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 9 15])
             % Plot the ISO components
@@ -95,7 +98,7 @@ switch Random_MT_Num
             print('-r300','-dtiff',Title)
             
             set(gcf,'Position',[100 100 800 1400]);
-            % Plot the inversion error
+            %% Plot the inversion error
             figure
             set(gcf,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 8 6])
             hold on
@@ -120,7 +123,7 @@ switch Random_MT_Num
             
             set(gcf,'Position',[100 100 800 600]);
             
-            % Plot the inversion error (Polar figure) 2015-11-5            
+            %% Plot the inversion error (Polar figure) 2015-11-5            
             InvError_MT_Polar=abs([Inversion_Error_MT,Inversion_Error_MT(:,1)]);
             Polar_Azimuth=[Azimuth,360]/180*pi;
             % According to the azimuth and radius plot the polar figure
@@ -128,9 +131,14 @@ switch Random_MT_Num
             % Case 2: Plot this kind of inversion error in 3 subplots
             Plot_Polar_Figure(Polar_Azimuth,InvError_MT_Polar,MT_Name{i},1)
         end
-        
+        %ENd the first plot code
     otherwise
-        % Multiple input sources
+        %% Under the multiple random input sources condition
+        %Firstly, plot the decomposition results of original input MTs
+        Plot_Decomposition_OriMTs(Original_MT_Decom);
+        %Secondly, plot the decomposition results of inversed MTs
+        Plot_Decomposition_InveMTs(Inversed_MT_Decom)
+        
         
 end
 
