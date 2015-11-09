@@ -127,6 +127,7 @@ for model_id=1:Model_Num
     close(ff) 
     %Using four kinds of MT (one by one) to test the inversion problem
     for i=1:Sour_Num
+        %Generate pure MT or random MT by changing the Pre_Coe (0 or non-0)
         RandMT_Value=RandMT_ValueOri*Per_Coe;
 %         RandMT_Value=RandMT_ValueOri*0;
         Count_Num=1;
