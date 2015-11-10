@@ -1,14 +1,12 @@
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-% Plot all the inversed moment tensors by using the P-wave and S-wave or using the S-wave %
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
-
-function Plot_InvRes_4MTs_Eves(Model_Num,RandMT_Num,Sour_Num,Q_Err,T_Orig_All,k_Orig_All,...
-    T_PS_All,k_PS_All,T_P_All,k_P_All,T_S_All,k_S_All)
-% Set the Tk patameters 2015-6-7 %
-Tk_Orig_All=zeros(2,RandMT_Num);
-Tk_PS_All=zeros(2,RandMT_Num);
-Tk_P_All=zeros(2,RandMT_Num);
-Tk_S_All=zeros(2,RandMT_Num);
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% Plot all the inversed moment tensors by using the P-wave and S-wave
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% According to the random number of different kind of MT, us different
+% algorithm to plot the 
+function Plot_InvRes_4MTs_Eves(Tk_Original,Tk_Inversed_PS,Tk_Inversed_P,Tk_Inversed_S)
+% Get the basic parameters
+[Model_Num,Sour_Num]=size(Tk_Inversed_PS);
+Model_Idx=1:Model_Num;
 
 FontSize=9;
 Markersize=3;
@@ -19,10 +17,8 @@ Markers=['o','s','^','v'];
 Title_Id={'(a)','(b)','(c)','(d)'};
 % Model_Idx=[1,3,5,6,9,13,17];
 % Model_Idx=1:2:17;
-Model_Idx=1:Model_Num;
-Model_Num=size(Model_Idx,2);
 
-Q_Num=size(Q_Err,2);
+
 % Plot the inversion results in the order of MTs
 for source_id=1:Sour_Num
     f1=figure();
@@ -37,29 +33,17 @@ for source_id=1:Sour_Num
     %         Plot the Source-Type diagram
     axis off;
     Plot_SourceTD();
-    
-    
-    
 %     p1=plot(TkOriginal_XY(1,:),TkOriginal_XY(2,:),'o','LineWidth',LineWidth);
 %     set(p1,'Markersize',Markersize,'Markeredgecolor','b','Markerfacecolor','b');
     %Calculate the T-k parameters and X-Y coordinates 2015-7-14 %
     for model_id=1:Model_Num 
-        Current_QErr=Q_Err(Model_Idx(model_id));
-        Current_Color_Id=ceil(((Current_QErr-Q_Err(1))/(Q_Err(Q_Num)-Q_Err(1))+0.01)*(size(cm,1)-1));
+        Current_QErr=Model_Idx(model_id);
+        Current_Color_Id=ceil(((Current_QErr-Model_Idx(1))/(Model_Idx(Model_Num)-Model_Idx(1))+0.01)*(size(cm,1)-1));
         Current_Color=cm(Current_Color_Id,:);
-        Tk_PS_All(1,:)=T_PS_All(:,Model_Idx(model_id),source_id)';
-        Tk_PS_All(2,:)=k_PS_All(:,Model_Idx(model_id),source_id)';
-        
-        Tk_P_All(1,:)=T_P_All(:,Model_Idx(model_id),source_id)';
-        Tk_P_All(2,:)=k_P_All(:,Model_Idx(model_id),source_id)';
-        
-        Tk_S_All(1,:)=T_S_All(:,model_id,source_id)';
-        Tk_S_All(2,:)=k_S_All(:,model_id,source_id)';
-        % Transform the T-k parameters to x-y coordinates
-        
-        [Tk_PS_All_XY]=Tk_Transform(Tk_PS_All);
-        [Tk_P_All_XY]=Tk_Transform(Tk_P_All);
-        [Tk_S_All_XY]=Tk_Transform(Tk_S_All);
+        % Transform the T-k parameters to x-y coordinates       
+        [Tk_PS_All_XY]=Tk_To_XY(Tk_Inversed_PS{model_id,source_id});
+        [Tk_P_All_XY]=Tk_To_XY(Tk_Inversed_P{model_id,source_id});
+        [Tk_S_All_XY]=Tk_To_XY(Tk_Inversed_S{model_id,source_id});
         %Plot the inversion results
         %1st source type
 %         p2=plot(Tk_P_All_XY(1,:),Tk_P_All_XY(2,:),'Marker',Markers(source_id),'LineStyle','none','LineWidth',LineWidth);
@@ -68,9 +52,7 @@ for source_id=1:Sour_Num
     end
     
     % Plot the original moment tensor by using '+' 2015-7-15 %
-    Tk_Orig_All(1,:)=T_Orig_All(:,1,source_id)';
-    Tk_Orig_All(2,:)=k_Orig_All(:,1,source_id)';
-    [TkOriginal_XY]=Tk_Transform(Tk_Orig_All);
+    [TkOriginal_XY]=Tk_To_XY(Tk_Original{source_id});
     p_Ori=plot(TkOriginal_XY(1,:),TkOriginal_XY(2,:),'k*','LineStyle','none','LineWidth',LineWidth);
     set(p_Ori,'Markersize',Markersize-1);
     
