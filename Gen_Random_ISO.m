@@ -58,7 +58,7 @@ Zero_Tk=zeros(2,1);
 for i=1:Count
     for j=i+1:Count
         Error=sum(abs(RandomISOs_XY(:,i)-RandomISOs_XY(:,j)));
-        if Error<=2E-2
+        if Error<=2.4E-2
             RandomISOs_XY(:,j)=Zero_Tk;
         end
         
@@ -70,6 +70,7 @@ New_Random_ISOs_6xN=Random_ISOs_6xN(:,Idx);
 New_RandomISOs_XY=RandomISOs_XY(:,Idx);
 
 %% Display the random ISO moment tensor
+%{
 f2=figure();
 set(f2,'position',[0 0 900 700])
 hold on;
@@ -87,5 +88,6 @@ set(p1,'Markersize',Markersize,'Markeredgecolor','r');
 Title='Initial Random Micro-source Mechanism';
 title(Title,'FontSize',FontSize);
 set(f2,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 8 6]);
-% print(f2,'-r300','-dtiff',Title);
+print(f2,'-r300','-dtiff',Title);
+%}
 end

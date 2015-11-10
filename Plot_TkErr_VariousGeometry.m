@@ -61,6 +61,50 @@ subplot(2,2,1)
 hold on
 grid on
 %}
+% Calculate the average error and error variance 2015-6-7 %
+%{
+AverError_Abso_Tk_PS=zeros(Sour_Num,Model_Num);
+ErrorVariance_Abso_Tk_PS=zeros(Sour_Num,Model_Num);
+AverError_Abso_Tk_P=zeros(Sour_Num,Model_Num);
+ErrorVariance_Abso_Tk_P=zeros(Sour_Num,Model_Num);
+% Set the error patameters 2015-6-7 %
+AverError_AbsoTk_PS=zeros(Sour_Num,Model_Num,2);
+ErrorVariance_AbsoTk_PS=zeros(Sour_Num,Model_Num,2);
+AverError_AbsoTk_P=zeros(Sour_Num,Model_Num,2);
+ErrorVariance_AbsoTk_P=zeros(Sour_Num,Model_Num,2);
+AverError_AbsoTk_S=zeros(Sour_Num,Model_Num,2);
+ErrorVariance_AbsoTk_S=zeros(Sour_Num,Model_Num,2);
+for mt_type_id=1:4
+    for model_id=1:Model_Num
+        % Calculate the average error and error variance by using P&S-wave
+        AverError_AbsoTk_PS(mt_type_id,model_id,1)=mean(Abso_T_Error_PS(:,model_id,mt_type_id));
+        AverError_AbsoTk_PS(mt_type_id,model_id,2)=mean(Abso_k_Error_PS(:,model_id,mt_type_id));
+        %         AverError_Abso_Tk(i,model_id)=(AverError_AbsoTk(i,model_id,1)+AverError_AbsoTk(i,model_id,2))/2;
+        
+        ErrorVariance_AbsoTk_PS(mt_type_id,model_id,1)=var(Abso_T_Error_PS(:,model_id,mt_type_id));
+        ErrorVariance_AbsoTk_PS(mt_type_id,model_id,2)=var(Abso_k_Error_PS(:,model_id,mt_type_id));
+        %         ErrorVariance_Abso_Tk(i,model_id)=sqrt((ErrorVariance_AbsoTk(i,model_id,1))^2+(ErrorVariance_AbsoTk(i,model_id,1))^2);
+        
+        % Calculate the average error and error variance by using P-wave
+        AverError_AbsoTk_P(mt_type_id,model_id,1)=mean(Abso_T_Error_P(:,model_id,mt_type_id));
+        AverError_AbsoTk_P(mt_type_id,model_id,2)=mean(Abso_k_Error_P(:,model_id,mt_type_id));
+        %         AverError_Abso_Tk(i,model_id)=(AverError_AbsoTk(i,model_id,1)+AverError_AbsoTk(i,model_id,2))/2;
+        
+        ErrorVariance_AbsoTk_P(mt_type_id,model_id,1)=var(Abso_T_Error_P(:,model_id,mt_type_id));
+        ErrorVariance_AbsoTk_P(mt_type_id,model_id,2)=var(Abso_k_Error_P(:,model_id,mt_type_id));
+        %         ErrorVariance_Abso_Tk(i,model_id)=sqrt((ErrorVariance_AbsoTk(i,model_id,1))^2+(ErrorVariance_AbsoTk(i,model_id,1))^2);
+        
+        % Calculate the average error and error variance by using S-wave
+        %         AverError_AbsoTk_S(i,model_id,1)=mean(Abso_T_Error_S(:,model_id,i));
+        %         AverError_AbsoTk_S(i,model_id,2)=mean(Abso_k_Error_S(:,model_id,i));
+        %         AverError_Abso_Tk(i,model_id)=(AverError_AbsoTk(i,model_id,1)+AverError_AbsoTk(i,model_id,2))/2;
+        
+        %         ErrorVariance_AbsoTk_S(i,model_id,1)=var(Abso_T_Error_S(:,model_id,i));
+        %         ErrorVariance_AbsoTk_S(i,model_id,2)=var(Abso_k_Error_S(:,model_id,i));
+        %         ErrorVariance_Abso_Tk(i,model_id)=sqrt((ErrorVariance_AbsoTk(i,model_id,1))^2+(ErrorVariance_AbsoTk(i,model_id,1))^2);
+    end
+end
+%}
 % Plot  the average error  of Tk for all the sources 2015-7-17 %
 for i=1:4
     f3=figure();

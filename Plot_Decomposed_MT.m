@@ -27,7 +27,7 @@ Azimuth=(0:Azimuth_Int:2*pi-Azimuth_Int)*180/pi;
 % Acoording to the 'Random_MT_Num', plot the different types of figure
 switch SingleType_MTsNum
     case 1
-        %% Under the single input source  condition
+        %% Under the single input source condition, plot the polar figure
         for i=1:Source_Num
             % Transform the cell into matrix
             Original_MT=[ones(Model_Num,1)*Original_MT_Decom{i}]';
@@ -133,11 +133,14 @@ switch SingleType_MTsNum
         end
         %ENd the first plot code
     otherwise
-        %% Under the multiple random input sources condition
+        %% Under the multiple random input sources condition, plot the decomosed figure
         %Firstly, plot the decomposition results of original input MTs
         Plot_Decomposition_OriMTs(Original_MT_Decom);
         %Secondly, plot the decomposition results of inversed MTs
-        Plot_Decomposition_InveMTs(Inversed_MT_Decom)
+        % According to 'Figure_Type', plot the different type figure:
+        % Figure_Type='1': plot the result model by model
+        % Figure_Type='2': plot the result according to MTs form.
+        Plot_Decomposition_InveMTs(Inversed_MT_Decom,1)
         
         
 end
