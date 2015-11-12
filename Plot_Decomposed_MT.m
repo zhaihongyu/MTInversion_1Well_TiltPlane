@@ -86,7 +86,7 @@ switch SingleType_MTsNum
 %             YTick_P3=YLim_P3(1):0.1:YLim_P3(2);
 %             YTickLabel_P3=YLim_P3(1)*100:10:YLim_P3(2)*100;
 %             set(gca,'YLim',YLim_P3,'YTick',YTick_P3,'YTicklabel',YTickLabel_P3,'FontSize',FontSize)
-            set(gca,'XLim',[0,350],'FontSize',FontSize)
+            set(gca,'XLim',[0,350],'YLim',[0,100],'FontSize',FontSize)
             ylabel('DC [%]','FontSize',FontSize);
             xlabel('Oberve well Azimuth [^o]','FontSize',FontSize);
             legend(Legend3,'Location','best','FontSize',FontSize-3)
@@ -97,7 +97,7 @@ switch SingleType_MTsNum
             Title=['Inversion Results - ',MT_Name{i}];
             print('-r300','-dtiff',Title)
             
-            set(gcf,'Position',[100 100 800 1400]);
+            set(gcf,'Position',[100 100 800 1200]);
             %% Plot the inversion error
             figure
             set(gcf,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 8 6])

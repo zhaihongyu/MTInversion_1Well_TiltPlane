@@ -38,6 +38,8 @@ for source_id=1:Sour_Num
     %Calculate the T-k parameters and X-Y coordinates 2015-7-14 %
     for model_id=1:Model_Num 
         Current_QErr=Model_Idx(model_id);
+        % BUG: the color bar's region is bigger than the maximum number of
+        % input parameters (Need fix)
         Current_Color_Id=ceil(((Current_QErr-Model_Idx(1))/(Model_Idx(Model_Num)-Model_Idx(1))+0.01)*(size(cm,1)-1));
         Current_Color=cm(Current_Color_Id,:);
         % Transform the T-k parameters to x-y coordinates       
@@ -93,11 +95,20 @@ fc1=figure();
 set(fc1,'PaperPositionMode','manual','PaperUnits','centimeters','PaperPosition',[0 0 15 6]);
 axis off;
 hold on;
-cm=colormap(jet);
+colormap(jet);
 %     Plot the colorbar 2015-7-14
 cb=colorbar;
-Ticks=0:0.125:1;
-TickLabels={'-75%','-45%','-15%','15%','45%','75%','105%','135%','165%'};
+TickLabels_Num=7;
+Ticks_Int=1/(TickLabels_Num-1);
+Ticks=0:Ticks_Int:1;
+Angle_Int=360/(TickLabels_Num-1);
+TickLabels_Angle=0:Angle_Int:360;
+
+TickLabels=cell(1,TickLabels_Num);
+for i=1:TickLabels_Num
+    TickLabels{i}=[num2str(TickLabels_Angle(i)),'^o'];
+end
+% TickLabels={'-75%','-45%','-15%','15%','45%','75%','105%','135%','165%'};
 set(cb,'Ticks',Ticks,'TickLabels',TickLabels,'Location','South Outside');
 %     Change the width of the colorbar 2015-7-14 %
 Cb_Pos=get(cb,'Position');

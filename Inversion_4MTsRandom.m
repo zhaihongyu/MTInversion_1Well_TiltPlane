@@ -5,26 +5,13 @@ clc;
 clear all;
 close all;
 
-
-%% Set the geometry 2015-5-30 %
-% Set the interface type: 
-% 1=>'1 tilt well under horizontal interface', 
-% 2=>'1 vertical well under tilt interface',
-% 3=>'Rotating 1 vertical well under horizontal interface'
-Interface_Type=3;
-[Receivers_AllModel,Shot,Vp,Vs,Layer_Z,Plane_Function,Model_Num]=Set_Geometry_1Well_V1(Interface_Type);
-%% Set the model parameters
-Sample_Int=0.00025;
-
-% Calculate the model number 2015-5-30 %
-Model_Id=1:Model_Num;
-% [Azimuth,Model_Num]=Cal_Azimuth(Well_Num);
-
-% Generate the ricker wavelet derivative 2015-5-29 %
-main_frequency=600;
-[Ricker_Derivative]=Gen_Ricker_Der(main_frequency,Sample_Int);
-
-% % % 4 types of basic seismic moment tensor % % %
+%% Identify the random moment tensor number 
+Random_Type=1;
+% Rand_Type=1: generate 4 kinds of pure moment tensors
+% Rand_Type=2: genrate 4 kinds of  single random moment tensors
+% Rand_Type=3: generate 4 kinds of multiple random moment tensors
+[MTs]=Gen_4MTs(Random_Type);
+% 4 types of basic seismic moment tensor % % %
 MT_Type_Num=4;
 % 4 base seismic moment tensors 2015-4-27 %
 M_ISO=2/3*[1 0 0;0 1 0;0 0 1];
@@ -32,13 +19,6 @@ M_DC=[1 0 0;0 0 0;0 0 -1];
 M_CLVD_Neg=2/3*[1 0 0;0 1 0;0 0 -2];
 M_CLVD_Pos=2/3*[2 0 0;0 -1 0;0 0 -1];
 
-%% Identify the random moment tensor number 
-Random_Type=3;
-% Rand_Type=1: generate 4 kinds of pure moment tensors
-% Rand_Type=2: genrate 4 kinds of  single random moment tensors
-% Rand_Type=3: generate 4 kinds of multiple random moment tensors
-[MTs]=Gen_4MTs(Random_Type);
-%
 Input_MT=zeros(3,3);
 
 % Original T-k variable value
@@ -52,6 +32,25 @@ for i=1:MT_Type_Num
     % Transform the vector of moment tensor to T-k parameters 2015-11-9 %
     Tk_Original{i}=MT_To_Tk(Current_MTs_6xN);
 end
+
+%% Set the geometry 2015-5-30 %
+% Set the interface type: 
+% 1=>'1 tilt well under horizontal interface', 
+% 2=>'1 vertical well under tilt interface',
+% 3=>'Rotating 1 vertical well under horizontal interface'
+Interface_Type=3;
+[Receivers_AllModel,Shot,Vp,Vs,Layer_Z,Plane_Function,Model_Num]=...
+    Set_Geometry_1Well_V1(Interface_Type);
+%% Set the model parameters
+Sample_Int=0.00025;
+
+% Calculate the model number 2015-5-30 %
+Model_Id=1:Model_Num;
+% [Azimuth,Model_Num]=Cal_Azimuth(Well_Num);
+
+% Generate the ricker wavelet derivative 2015-5-29 %
+main_frequency=600;
+[Ricker_Derivative]=Gen_Ricker_Der(main_frequency,Sample_Int);
 
 % Inversed T-k variable value by different wave form
 Tk_Inversed_PS=cell(Model_Num,MT_Type_Num);
