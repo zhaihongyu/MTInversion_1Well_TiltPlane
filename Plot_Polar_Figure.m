@@ -11,7 +11,7 @@ LineWidth=1;
 MarkerSize=3;
 Axis_Color=[0.5 0.5 0.5];
 [Object_Num,Azimuth_Num]=size(Radius);
-
+Color_Type2={'r','g','b'};
 % Radius_Min=min(min());
 Radius_Max=max(max(abs(Radius*10)));
 
@@ -89,9 +89,11 @@ switch Plot_Type
             set(t2,'HorizontalAlignment','center','FontSize',FontSize);
         end
         % Plot the object line
+        %         O=cell(1,Object_Num);
         for i=1:Object_Num
             O(i)=plot(Object_Line_Position(i,:,1),Object_Line_Position(i,:,2),'-*',...
                 'LineWidth',LineWidth,'MarkerSize',MarkerSize);
+            set(O(i),'Color',Color_Type2{i});
         end
         %Set the figure properties
         legend(O,{'ISO','CLVD','DC'})
@@ -109,7 +111,7 @@ switch Plot_Type
         %% Using 3 figure to display all inversion error
         Figure_Idx={'A','B','C'};
         Legend_Type2={'ISO','CLVD','DC'};
-        Color_Type2={'r','g','b'};
+        
         
         %Axxording to the class number of inversion error, generate subplot figure number 
         for Obj_Id=1:Object_Num

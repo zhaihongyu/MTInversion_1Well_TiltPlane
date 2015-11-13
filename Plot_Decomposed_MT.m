@@ -129,7 +129,7 @@ switch SingleType_MTsNum
             % According to the azimuth and radius plot the polar figure
             % Case 1: Plot all the inversion error in one figure
             % Case 2: Plot this kind of inversion error in 3 subplots
-            Plot_Polar_Figure(Polar_Azimuth,InvError_MT_Polar,MT_Name{i},1)
+            Plot_Polar_Figure(Polar_Azimuth,InvError_MT_Polar,MT_Name{i},2)
         end
         %ENd the first plot code
     otherwise

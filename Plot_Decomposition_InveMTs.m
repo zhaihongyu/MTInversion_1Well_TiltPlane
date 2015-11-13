@@ -1,5 +1,8 @@
 % 2015-11-9 %
 % Plot the decomposition results of inversed moment tensors
+% According to 'Figure_Type', plot the different type figure:
+% Figure_Type=1: plot the result model by model
+% Figure_Type='otherwise': plot the result according to MTs form.
 function Plot_Decomposition_InveMTs(Inversed_MTs_Decom,Figure_Type)
 FontSize=9;
 Axis_LineWidth=0.1;
@@ -11,9 +14,7 @@ MTs_Name={'ISO','DC','CLVD^-','CLVD^+'};
 XLabel={'ISO Percent [%]','CLVD Percent [%]','DC Percent [%]'};
 FaceColor={'r','g','b'};
 % Plot the result of MT decomposition
-% According to 'Figure_Type', plot the different type figure:
-% Figure_Type=1: plot the result model by model
-% Figure_Type='otherwise': plot the result according to MTs form.
+
 switch Figure_Type
     case 1
         % plot the result model by model
